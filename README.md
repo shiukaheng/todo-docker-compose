@@ -29,6 +29,20 @@ Docker Compose setup for the Todo application stack:
    - Backend API: http://localhost:8000
    - Neo4j Browser: http://localhost:7474
 
+## Development Mode
+
+For development with hot reloading:
+
+```bash
+docker-compose -f docker-compose.dev.yml up
+```
+
+This mounts source code from submodules and runs:
+- **Frontend**: Vite dev server with hot reload
+- **Backend**: Uvicorn with `--reload`
+
+Changes to source files are reflected immediately.
+
 ## Configuration
 
 All configuration is done via environment variables in `.env`:
@@ -52,9 +66,9 @@ All configuration is done via environment variables in `.env`:
 | `FRONTEND_PORT` | `3000` | Web UI port |
 | `API_URL` | `http://localhost:8000` | Backend API URL (injected at runtime) |
 
-## Development
+## Submodules
 
-To update submodules:
+To update submodules to latest:
 ```bash
 git submodule update --remote
 ```

@@ -1,0 +1,17 @@
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# Install dependencies
+COPY repo/backend/pyproject.toml /tmp/pyproject.toml
+RUN pip install --no-cache-dir /tmp && rm /tmp/pyproject.toml
+
+# App code will be mounted at runtime
+ENV NEO4J_URL=bolt://neo4j:7687
+ENV NEO4J_USER=neo4j
+ENV NEO4J_PASSWORD=password
+
+EXPOSE 8000
+
+# Run with reload for development
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
