@@ -1,12 +1,14 @@
 #!/bin/sh
 
-# Replace API_URL placeholder in built JS files at runtime
-# This allows configuring the API endpoint without rebuilding
+# Inject runtime configuration into index.html
+# This allows setting API_URL without rebuilding the image
 
 if [ -n "$API_URL" ]; then
-    # Find and replace the default API URL in JS files
-    find /usr/share/nginx/html -name '*.js' -exec sed -i "s|http://workstation.local:8000|${API_URL}|g" {} \;
+    # Replace the default config with the actual URL
+    sed -i "s|defaultApiUrl: null|defaultApiUrl: \"${API_URL}\"|g" /usr/share/nginx/html/index.html
     echo "Configured API_URL: $API_URL"
+else
+    echo "No API_URL set - frontend will not auto-connect"
 fi
 
 exec "$@"
