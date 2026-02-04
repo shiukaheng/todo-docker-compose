@@ -1,0 +1,6 @@
+[submodule "backend/repo"]
+	path = backend/repo
+	url = https://github.com/shiukaheng/todo.git
+[submodule "frontend/repo"]
+	path = frontend/repo
+	url = https://github.com/shiukaheng/todo-gui.git
