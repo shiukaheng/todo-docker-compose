@@ -6,6 +6,10 @@ COPY repo/package*.json ./
 RUN npm ci
 
 COPY repo/ .
+
+# Allow configurable base path (defaults to / for root)
+ARG BASE_PATH=/
+ENV BASE_PATH=${BASE_PATH}
 RUN npm run build
 
 FROM nginx:alpine
