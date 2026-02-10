@@ -81,8 +81,19 @@ else
     fi
 fi
 
+# Check if port is in use
+check_port() {
+    lsof -i :$1 >/dev/null 2>&1 || ss -tln | grep -q ":$1 " 2>/dev/null
+}
+
 # Start backend with uv
 echo -e "${BLUE}Starting backend...${NC}"
+if check_port 8000; then
+    echo -e "${RED}Error: Port 8000 is already in use${NC}"
+    echo -e "${YELLOW}Kill the existing process with: sudo lsof -ti:8000 | xargs kill -9${NC}"
+    exit 1
+fi
+
 cd backend/repo/backend
 if ! command -v uv &> /dev/null; then
     echo -e "${RED}uv not found. Install it with: curl -LsSf https://astral.sh/uv/install.sh | sh${NC}"
@@ -95,7 +106,7 @@ NEO4J_USER=neo4j \
 NEO4J_PASSWORD=password \
 uv run uvicorn app.main:app --reload --host 0.0.0.0 --port 8000 &
 BACKEND_PID=$!
-echo -e "${GREEN}Backend started (PID: $BACKEND_PID) on http://localhost:8000${NC}"
+echo -e "${GREEN}Backend started (PID: $BACKEND_PID)${NC}"
 
 # Start frontend
 echo -e "${BLUE}Starting frontend...${NC}"
@@ -103,12 +114,10 @@ cd ../../../frontend/repo
 npm install
 npm run dev &
 FRONTEND_PID=$!
-echo -e "${GREEN}Frontend started (PID: $FRONTEND_PID) on http://localhost:3000${NC}"
+echo -e "${GREEN}Frontend started (PID: $FRONTEND_PID)${NC}"
 
 echo -e "\n${GREEN}✓ Development environment ready!${NC}"
-echo -e "${BLUE}  Frontend: http://localhost:3000${NC}"
-echo -e "${BLUE}  Backend:  http://localhost:8000${NC}"
-echo -e "${BLUE}  Neo4j:    http://localhost:7474${NC}"
+echo -e "${YELLOW}Check the output above for actual URLs (ports may vary if defaults are in use)${NC}"
 echo -e "\nPress Ctrl+C to stop all services\n"
 
 # Wait for processes
