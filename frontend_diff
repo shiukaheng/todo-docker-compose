@@ -1,0 +1,1570 @@
+diff --git a/index.html b/index.html
+index c365acd..71023cb 100644
+--- a/index.html
++++ b/index.html
+@@ -16,7 +16,7 @@
+   <script>
+     window.__CONFIG__ = {
+       // Set to API URL to auto-connect on load, or leave empty/null for manual connection
+-      defaultApiUrl: "/api"
++      defaultApiUrl: ""
+     };
+   </script>
+ </head>
+diff --git a/package-lock.json b/package-lock.json
+index bc97d21..ea5824e 100644
+--- a/package-lock.json
++++ b/package-lock.json
+@@ -12,8 +12,10 @@
+         "@blocknote/core": "^0.16.0",
+         "@blocknote/mantine": "^0.16.0",
+         "@blocknote/react": "^0.16.0",
++        "chrono-node": "^2.9.0",
+         "date-fns": "^3.6.0",
+         "react": "^18.3.1",
++        "react-datepicker": "^9.1.0",
+         "react-dom": "^18.3.1",
+         "stats.js": "^0.17.0",
+         "tinykeys": "^3.0.0",
+@@ -24,6 +26,7 @@
+       },
+       "devDependencies": {
+         "@types/react": "^18.3.11",
++        "@types/react-datepicker": "^6.2.0",
+         "@types/react-dom": "^18.3.0",
+         "@types/stats.js": "^0.17.4",
+         "@types/uuid": "^10.0.0",
+@@ -2013,6 +2016,18 @@
+         "csstype": "^3.2.2"
+       }
+     },
++    "node_modules/@types/react-datepicker": {
++      "version": "6.2.0",
++      "resolved": "https://registry.npmjs.org/@types/react-datepicker/-/react-datepicker-6.2.0.tgz",
++      "integrity": "sha512-+JtO4Fm97WLkJTH8j8/v3Ldh7JCNRwjMYjRaKh4KHH0M3jJoXtwiD3JBCsdlg3tsFIw9eQSqyAPeVDN2H2oM9Q==",
++      "dev": true,
++      "license": "MIT",
++      "dependencies": {
++        "@floating-ui/react": "^0.26.2",
++        "@types/react": "*",
++        "date-fns": "^3.3.1"
++      }
++    },
+     "node_modules/@types/react-dom": {
+       "version": "18.3.7",
+       "resolved": "https://registry.npmjs.org/@types/react-dom/-/react-dom-18.3.7.tgz",
+@@ -2859,6 +2874,15 @@
+         "node": ">= 6"
+       }
+     },
++    "node_modules/chrono-node": {
++      "version": "2.9.0",
++      "resolved": "https://registry.npmjs.org/chrono-node/-/chrono-node-2.9.0.tgz",
++      "integrity": "sha512-glI4YY2Jy6JII5l3d5FN6rcrIbKSQqKPhWsIRYPK2IK8Mm4Q1ZZFdYIaDqglUNf7gNwG+kWIzTn0omzzE0VkvQ==",
++      "license": "MIT",
++      "engines": {
++        "node": "^12.20.0 || ^14.13.1 || >=16.0.0"
++      }
++    },
+     "node_modules/clsx": {
+       "version": "2.1.1",
+       "resolved": "https://registry.npmjs.org/clsx/-/clsx-2.1.1.tgz",
+@@ -7291,6 +7315,52 @@
+         "node": ">=0.10.0"
+       }
+     },
++    "node_modules/react-datepicker": {
++      "version": "9.1.0",
++      "resolved": "https://registry.npmjs.org/react-datepicker/-/react-datepicker-9.1.0.tgz",
++      "integrity": "sha512-lOp+m5bc+ttgtB5MHEjwiVu4nlp4CvJLS/PG1OiOe5pmg9kV73pEqO8H0Geqvg2E8gjqTaL9eRhSe+ZpeKP3nA==",
++      "license": "MIT",
++      "dependencies": {
++        "@floating-ui/react": "^0.27.15",
++        "clsx": "^2.1.1",
++        "date-fns": "^4.1.0"
++      },
++      "peerDependencies": {
++        "date-fns-tz": "^3.0.0",
++        "react": "^16.9.0 || ^17 || ^18 || ^19 || ^19.0.0-rc",
++        "react-dom": "^16.9.0 || ^17 || ^18 || ^19 || ^19.0.0-rc"
++      },
++      "peerDependenciesMeta": {
++        "date-fns-tz": {
++          "optional": true
++        }
++      }
++    },
++    "node_modules/react-datepicker/node_modules/@floating-ui/react": {
++      "version": "0.27.17",
++      "resolved": "https://registry.npmjs.org/@floating-ui/react/-/react-0.27.17.tgz",
++      "integrity": "sha512-LGVZKHwmWGg6MRHjLLgsfyaX2y2aCNgnD1zT/E6B+/h+vxg+nIJUqHPAlTzsHDyqdgEpJ1Np5kxWuFEErXzoGg==",
++      "license": "MIT",
++      "dependencies": {
++        "@floating-ui/react-dom": "^2.1.7",
++        "@floating-ui/utils": "^0.2.10",
++        "tabbable": "^6.0.0"
++      },
++      "peerDependencies": {
++        "react": ">=17.0.0",
++        "react-dom": ">=17.0.0"
++      }
++    },
++    "node_modules/react-datepicker/node_modules/date-fns": {
++      "version": "4.1.0",
++      "resolved": "https://registry.npmjs.org/date-fns/-/date-fns-4.1.0.tgz",
++      "integrity": "sha512-Ukq0owbQXxa/U3EGtsdVBkR1w7KOQ5gIBqdH2hkvknzZPYvBxb/aa6E8L7tmjFtkwZBu3UXBbjIgPo/Ez4xaNg==",
++      "license": "MIT",
++      "funding": {
++        "type": "github",
++        "url": "https://github.com/sponsors/kossnocorp"
++      }
++    },
+     "node_modules/react-dom": {
+       "version": "18.3.1",
+       "resolved": "https://registry.npmjs.org/react-dom/-/react-dom-18.3.1.tgz",
+@@ -8417,7 +8487,7 @@
+     },
+     "node_modules/todo-client": {
+       "version": "0.1.0",
+-      "resolved": "git+ssh://git@github.com/shiukaheng/todo.git#c55a250e2af1ba1bd929e4376f46a98cbff85afa",
++      "resolved": "git+ssh://git@github.com/shiukaheng/todo.git#38f84662ebc6cb0cc5bb14c783c9463ce80b4d97",
+       "license": "MIT"
+     },
+     "node_modules/trim-lines": {
+diff --git a/package.json b/package.json
+index c2b454b..30c0a81 100644
+--- a/package.json
++++ b/package.json
+@@ -12,6 +12,7 @@
+   },
+   "devDependencies": {
+     "@types/react": "^18.3.11",
++    "@types/react-datepicker": "^6.2.0",
+     "@types/react-dom": "^18.3.0",
+     "@types/stats.js": "^0.17.4",
+     "@types/uuid": "^10.0.0",
+@@ -36,8 +37,10 @@
+     "@blocknote/core": "^0.16.0",
+     "@blocknote/mantine": "^0.16.0",
+     "@blocknote/react": "^0.16.0",
++    "chrono-node": "^2.9.0",
+     "date-fns": "^3.6.0",
+     "react": "^18.3.1",
++    "react-datepicker": "^9.1.0",
+     "react-dom": "^18.3.1",
+     "stats.js": "^0.17.0",
+     "tinykeys": "^3.0.0",
+diff --git a/src/commander/ui/CommandPlane.tsx b/src/commander/ui/CommandPlane.tsx
+index c10441f..9a502ed 100644
+--- a/src/commander/ui/CommandPlane.tsx
++++ b/src/commander/ui/CommandPlane.tsx
+@@ -116,6 +116,8 @@ export function CommandPlane({ controller }: CommandPlaneProps) {
+                     className="flex-1 bg-transparent ml-1 text-white outline-none text-base"
+                     placeholder=""
+                     autoComplete="off"
++                    autoCapitalize="off"
++                    autoCorrect="off"
+                     spellCheck={false}
+                 />
+             </div>
+diff --git a/src/graph/GraphViewerEngine.ts b/src/graph/GraphViewerEngine.ts
+index 6b5692e..0fbeb94 100644
+--- a/src/graph/GraphViewerEngine.ts
++++ b/src/graph/GraphViewerEngine.ts
+@@ -18,6 +18,8 @@ import {
+     WebColaEngine,
+     ForceDirectedEngine,
+ } from "./simulation";
++// TEMPORARY: Position persistence until backend storage exists (remove this line to disable)
++import { PositionPersistenceManager } from "./simulation/PositionPersistenceManager";
+ import {
+     NavigationEngine,
+     NavigationState,
+@@ -78,6 +80,9 @@ export class GraphViewerEngine extends AbstractGraphViewerEngine {
+     private currentSimulationMode: SimulationMode;
+     private storeUnsubscribe: (() => void) | null = null;
+ 
++    // TEMPORARY: Position persistence manager (remove this line to disable)
++    private positionPersistence: PositionPersistenceManager;
++
+     constructor(
+         container: HTMLDivElement,
+         getCursor: () => string | null,
+@@ -102,7 +107,14 @@ export class GraphViewerEngine extends AbstractGraphViewerEngine {
+ 
+         // Subsystems
+         this.renderer = new SVGRenderer(this.svg);
+-        
++
++        // TEMPORARY: Initialize position persistence and load saved positions
++        this.positionPersistence = new PositionPersistenceManager();
++        const savedPositions = this.positionPersistence.loadPositions();
++        if (Object.keys(savedPositions).length > 0) {
++            this.simulationState = { positions: savedPositions };
++        }
++
+         // Initialize simulation engine based on store mode
+         this.currentSimulationMode = useTodoStore.getState().simulationMode;
+         this.simulationEngine = this.createSimulationEngine(this.currentSimulationMode);
+@@ -139,6 +151,9 @@ export class GraphViewerEngine extends AbstractGraphViewerEngine {
+         });
+         this.inputHandler.setCallback((event) => this.interactionController.handleEvent(event));
+ 
++        // TEMPORARY: Start position persistence monitoring
++        this.positionPersistence.start(() => this.simulationState);
++
+         this.lastFrameTime = performance.now();
+         this.startLoop();
+     }
+@@ -346,6 +361,8 @@ export class GraphViewerEngine extends AbstractGraphViewerEngine {
+             cancelAnimationFrame(this.animationFrameId);
+             this.animationFrameId = null;
+         }
++        // TEMPORARY: Stop position persistence monitoring
++        this.positionPersistence.stop();
+         this.storeUnsubscribe?.();
+         this.storeUnsubscribe = null;
+         this.inputHandler.destroy();
+diff --git a/src/graph/NodeDetailOverlay.tsx b/src/graph/NodeDetailOverlay.tsx
+index d93e12f..a12d939 100644
+--- a/src/graph/NodeDetailOverlay.tsx
++++ b/src/graph/NodeDetailOverlay.tsx
+@@ -2,11 +2,14 @@ import { useState, useEffect, useCallback } from "react";
+ import { useTodoStore } from "../stores/todoStore";
+ import { formatDistanceToNow } from "date-fns";
+ import { getUrgencyColorCSSFromTimestamp } from "../utils/urgencyColor";
++import * as chrono from "chrono-node";
+ 
+ interface EditState {
+     field: 'id' | 'text' | 'due' | null;
+     value: string;
+-    timeValue?: string; // Optional time for due date editing
++    parsedDate?: Date | null; // Parsed date from natural language or picker
++    parseError?: string; // Error message if parsing fails
++    showPicker?: boolean; // Whether to show the date picker
+ }
+ 
+ export function NodeDetailOverlay() {
+@@ -16,20 +19,11 @@ export function NodeDetailOverlay() {
+ 
+     const task = cursor && graphData?.tasks[cursor] ? graphData.tasks[cursor] : null;
+ 
+-    // Compute if task is blocked (any dependency not calculatedCompleted)
+-    const isBlocked = (() => {
+-        if (!task || !graphData) return false;
+-        const childDepIds = task.children || [];
+-        const deps = graphData.dependencies || {};
+-        const tasks = graphData.tasks || {};
+-        for (const depId of childDepIds) {
+-            const dep = deps[depId];
+-            if (!dep) continue;
+-            const depTask = tasks[dep.toId];
+-            if (depTask && !depTask.calculatedCompleted) return true;
+-        }
+-        return false;
+-    })();
++    // Debug: log task data
++    // Current task loaded
++
++    // Backend provides depsClear - no need to calculate manually
++    const isBlocked = task ? (task.depsClear === false) : false;
+ 
+     const [edit, setEdit] = useState<EditState>({ field: null, value: '' });
+ 
+@@ -38,8 +32,19 @@ export function NodeDetailOverlay() {
+         setEdit({ field: null, value: '' });
+     }, [cursor]);
+ 
+-    const startEdit = (field: EditState['field'], currentValue: string, timeValue?: string) => {
+-        setEdit({ field, value: currentValue, timeValue });
++    const startEdit = (field: EditState['field'], currentValue: string) => {
++        if (field === 'due') {
++            // For due date, start with empty natural language input
++            setEdit({
++                field,
++                value: '',
++                parsedDate: currentValue ? new Date(parseInt(currentValue) * 1000) : null,
++                parseError: undefined,
++                showPicker: false
++            });
++        } else {
++            setEdit({ field, value: currentValue });
++        }
+     };
+ 
+     const cancelEdit = () => {
+@@ -62,16 +67,13 @@ export function NodeDetailOverlay() {
+                 if (edit.field === 'text') {
+                     update.text = edit.value;
+                 } else if (edit.field === 'due') {
+-                    if (edit.value) {
+-                        // Combine date + time (default to 23:59 if no time)
+-                        const time = edit.timeValue || '23:59';
+-                        const dateStr = `${edit.value}T${time}`;
+-                        update.due = Math.floor(new Date(dateStr).getTime() / 1000);
++                    if (edit.parsedDate) {
++                        update.due = Math.floor(edit.parsedDate.getTime() / 1000);
+                     } else {
+                         update.due = null;
+                     }
+                 }
+-                await api.setTaskApiTasksTaskIdPatch({ taskId: task.id, taskUpdate: update });
++                await api.setTaskApiTasksTaskIdPatch({ taskId: task.id, nodeUpdate: update });
+             }
+             setEdit({ field: null, value: '' });
+         } catch (err) {
+@@ -79,40 +81,62 @@ export function NodeDetailOverlay() {
+         }
+     };
+ 
++    const tryParseNaturalLanguage = () => {
++        if (!edit.value.trim()) {
++            setEdit({ ...edit, parsedDate: null, parseError: undefined });
++            return;
++        }
++
++        const parsed = chrono.parseDate(edit.value);
++        if (parsed) {
++            setEdit({ ...edit, parsedDate: parsed, parseError: undefined });
++        } else {
++            setEdit({ ...edit, parsedDate: null, parseError: 'Could not parse date. Try "tomorrow", "in 2 hours", "next monday at 3pm", or use the calendar.' });
++        }
++    };
++
+     const handleKeyDown = (e: React.KeyboardEvent) => {
+         if (e.key === 'Enter') {
+             e.preventDefault();
+-            saveEdit();
++            if (edit.field === 'due') {
++                tryParseNaturalLanguage();
++                // Only save if we have a parsed date or if clearing
++                if (edit.parsedDate || !edit.value.trim()) {
++                    saveEdit();
++                }
++            } else {
++                saveEdit();
++            }
+         } else if (e.key === 'Escape') {
+             e.preventDefault();
+             cancelEdit();
+         }
+     };
+ 
+-    // Space to toggle completion (disabled for inferred or blocked nodes)
+-    const canToggle = task && !task.inferred && !isBlocked;
+-    
++    // Space to toggle completion (disabled for gates or blocked nodes)
++    const canToggle = task && task.nodeType === "Task" && !isBlocked;
++
+     const toggleCompletion = useCallback(async () => {
+-        if (!task || !api || task.inferred || isBlocked) return;
++        if (!task || !api || task.nodeType !== "Task" || isBlocked) return;
+         try {
+             await api.setTaskApiTasksTaskIdPatch({
+                 taskId: task.id,
+-                taskUpdate: { completed: !task.completed },
++                nodeUpdate: { completed: !task.completed },
+             });
+         } catch (err) {
+             console.error("Failed to toggle completion:", err);
+         }
+     }, [task, api, isBlocked]);
+ 
+-    const toggleInferred = useCallback(async () => {
++    const setNodeType = useCallback(async (newType: string) => {
+         if (!task || !api) return;
+         try {
+             await api.setTaskApiTasksTaskIdPatch({
+                 taskId: task.id,
+-                taskUpdate: { inferred: !task.inferred },
++                nodeUpdate: { nodeType: newType },
+             });
+         } catch (err) {
+-            console.error("Failed to toggle inferred:", err);
++            console.error("Failed to change node type:", err);
+         }
+     }, [task, api]);
+ 
+@@ -156,7 +180,7 @@ export function NodeDetailOverlay() {
+     const clearDue = async () => {
+         if (!api || !task) return;
+         try {
+-            await api.setTaskApiTasksTaskIdPatch({ taskId: task.id, taskUpdate: { due: null } });
++            await api.setTaskApiTasksTaskIdPatch({ taskId: task.id, nodeUpdate: { due: null } });
+             setEdit({ field: null, value: '' });
+         } catch (err) {
+             console.error("Failed to clear due date:", err);
+@@ -218,14 +242,20 @@ export function NodeDetailOverlay() {
+             </div>
+ 
+             {/* Status line */}
+-            <div className="flex gap-4 text-xs">
+-                {/* Node type: task or inferred - click to toggle */}
+-                <span
+-                    onClick={toggleInferred}
+-                    className="cursor-pointer text-white/50 hover:text-white/70"
++            <div className="flex gap-4 text-xs items-center">
++                {/* Node type selector */}
++                <select
++                    value={task.nodeType || "Task"}
++                    onChange={(e) => setNodeType(e.target.value)}
++                    className="bg-white/10 text-white hover:text-white border border-white/20 rounded px-2 py-1 cursor-pointer text-xs"
++                    style={{ color: 'white' }}
+                 >
+-                    {task.inferred ? "inferred" : "task"}
+-                </span>
++                    <option value="Task" style={{ backgroundColor: '#1f2937', color: 'white' }}>task</option>
++                    <option value="And" style={{ backgroundColor: '#1f2937', color: 'white' }}>and (all)</option>
++                    <option value="Or" style={{ backgroundColor: '#1f2937', color: 'white' }}>or (any)</option>
++                    <option value="Not" style={{ backgroundColor: '#1f2937', color: 'white' }}>not (none)</option>
++                    <option value="ExactlyOne" style={{ backgroundColor: '#1f2937', color: 'white' }}>xor (one)</option>
++                </select>
+ 
+                 {/* Status: blocked > completed > actionable */}
+                 {isBlocked ? (
+@@ -234,47 +264,115 @@ export function NodeDetailOverlay() {
+                     <span
+                         onClick={() => canToggle && toggleCompletion()}
+                         className={
+-                            task.inferred
++                            task.nodeType !== "Task"
+                                 ? "text-white/30"
+-                                : task.calculatedCompleted
++                                : task.calculatedValue
+                                     ? "text-green-400 cursor-pointer hover:text-green-300"
+                                     : "text-orange-400 cursor-pointer hover:text-orange-300"
+                         }
+                     >
+-                        {task.calculatedCompleted ? "completed" : "actionable"}
++                        {task.calculatedValue ? "completed" : "actionable"}
+                     </span>
+                 )}
+ 
+                 {/* Due - displays calculatedDue (inferred), edits task.due (own) */}
+                 {isEditing('due') ? (
+-                    <div className="flex items-center gap-2">
+-                        <input
+-                            type="date"
+-                            value={edit.value as string}
+-                            onChange={(e) => setEdit({ ...edit, value: e.target.value })}
+-                            onKeyDown={handleKeyDown}
+-                            autoFocus
+-                            className="bg-white/10 border border-white/30 rounded px-1 py-0.5 text-white text-base outline-none"
+-                        />
+-                        <input
+-                            type="time"
+-                            value={edit.timeValue || ''}
+-                            onChange={(e) => setEdit({ ...edit, timeValue: e.target.value })}
+-                            onKeyDown={handleKeyDown}
+-                            placeholder="23:59"
+-                            className="bg-white/10 border border-white/30 rounded px-1 py-0.5 text-white text-base outline-none w-20"
+-                        />
+-                        <button onClick={saveEdit} className="text-green-400 hover:text-green-300">save</button>
+-                        <button onClick={clearDue} className="text-red-400 hover:text-red-300">clear</button>
+-                        <button onClick={cancelEdit} className="text-white/40 hover:text-white/60">cancel</button>
++                    <div className="flex flex-col gap-1">
++                        <div className="flex items-center gap-2">
++                            {!edit.showPicker ? (
++                                <>
++                                    <input
++                                        type="text"
++                                        value={edit.value}
++                                        onChange={(e) => setEdit({ ...edit, value: e.target.value, parseError: undefined })}
++                                        onKeyDown={handleKeyDown}
++                                        onBlur={tryParseNaturalLanguage}
++                                        autoFocus
++                                        className="bg-white/10 border border-white/30 rounded px-2 py-0.5 text-white text-base outline-none flex-1"
++                                    />
++                                    <button
++                                        onClick={() => setEdit({ ...edit, showPicker: true })}
++                                        className="text-white hover:text-white/80 px-2"
++                                        title="Open calendar"
++                                    >
++                                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
++                                            <rect x="2" y="3" width="12" height="11" rx="1" stroke="currentColor" strokeWidth="1.5"/>
++                                            <line x1="2" y1="6" x2="14" y2="6" stroke="currentColor" strokeWidth="1.5"/>
++                                            <line x1="5" y1="1" x2="5" y2="4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
++                                            <line x1="11" y1="1" x2="11" y2="4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
++                                        </svg>
++                                    </button>
++                                </>
++                            ) : (
++                                <>
++                                    <input
++                                        type="date"
++                                        value={edit.parsedDate ? edit.parsedDate.toISOString().slice(0, 10) : ''}
++                                        onChange={(e) => {
++                                            const newDate = e.target.value ? new Date(e.target.value) : null;
++                                            // Preserve time if it exists
++                                            if (newDate && edit.parsedDate) {
++                                                newDate.setHours(edit.parsedDate.getHours(), edit.parsedDate.getMinutes());
++                                            }
++                                            setEdit({ ...edit, parsedDate: newDate, parseError: undefined });
++                                        }}
++                                        onKeyDown={handleKeyDown}
++                                        autoFocus
++                                        className="bg-white/10 border border-white/30 rounded px-1 py-0.5 text-white text-base outline-none"
++                                    />
++                                    <input
++                                        type="time"
++                                        value={edit.parsedDate ? edit.parsedDate.toTimeString().slice(0, 5) : ''}
++                                        onChange={(e) => {
++                                            if (edit.parsedDate && e.target.value) {
++                                                const [hours, minutes] = e.target.value.split(':').map(Number);
++                                                const newDate = new Date(edit.parsedDate);
++                                                newDate.setHours(hours, minutes);
++                                                setEdit({ ...edit, parsedDate: newDate, parseError: undefined });
++                                            }
++                                        }}
++                                        onKeyDown={handleKeyDown}
++                                        className="bg-white/10 border border-white/30 rounded px-1 py-0.5 text-white text-base outline-none w-20"
++                                    />
++                                    <button
++                                        onClick={() => setEdit({ ...edit, showPicker: false })}
++                                        className="text-white/60 hover:text-white/80 text-xs"
++                                        title="Back to text input"
++                                    >
++                                        text
++                                    </button>
++                                </>
++                            )}
++                        </div>
++                        {edit.parsedDate && !edit.showPicker && (
++                            <div className="text-green-400 text-xs">
++                                → {edit.parsedDate.toLocaleString()}
++                            </div>
++                        )}
++                        {edit.parseError && (
++                            <div className="text-red-400 text-xs">
++                                {edit.parseError}
++                            </div>
++                        )}
++                        <div className="flex items-center gap-2">
++                            <button
++                                onClick={saveEdit}
++                                disabled={edit.field === 'due' && edit.value.trim() !== '' && !edit.parsedDate}
++                                className="text-green-400 hover:text-green-300 disabled:text-gray-500 disabled:cursor-not-allowed"
++                            >
++                                save
++                            </button>
++                            <button onClick={clearDue} className="text-red-400 hover:text-red-300">clear</button>
++                            <button onClick={cancelEdit} className="text-white/40 hover:text-white/60">cancel</button>
++                        </div>
+                     </div>
+                 ) : (
+                     <span
+-                        onClick={() => startEdit('due', formatDueDateForInput(task.due), formatDueTimeForInput(task.due))}
++                        onClick={() => startEdit('due', task.due?.toString() || '')}
+                         className="cursor-pointer hover:opacity-80"
+                         style={task.calculatedDue && !task.calculatedCompleted ? { color: getUrgencyColorCSSFromTimestamp(task.calculatedDue) } : undefined}
+                     >
+-                        due: {task.calculatedDue 
++                        due: {task.calculatedDue
+                             ? `${formatDateRelative(task.calculatedDue)} / ${formatDateAbsolute(task.calculatedDue)}`
+                             : "-"}
+                     </span>
+diff --git a/src/graph/preprocess/pipeline.ts b/src/graph/preprocess/pipeline.ts
+index dadae55..5b03d4b 100644
+--- a/src/graph/preprocess/pipeline.ts
++++ b/src/graph/preprocess/pipeline.ts
+@@ -2,7 +2,7 @@
+  * Graph preprocessing pipeline: raw API data → styled graph ready for rendering.
+  */
+ 
+-import { TaskListOut } from "todo-client";
++import { NodeListOut } from "todo-client";
+ import { nestGraphData, NestedGraphData } from "./nestGraphData";
+ import { computeConnectedComponents, ComponentGraphData } from "./connectedComponents";
+ import { baseStyleGraphData, conditionalStyleGraphData, StyledGraphData } from "./styleGraphData";
+@@ -13,7 +13,7 @@ export type ProcessedGraphData = StyledGraphData<ComponentGraphData<NestedGraphD
+ /**
+  * Transform raw API task list into styled graph data ready for simulation.
+  */
+-export function preprocessGraph(taskList: TaskListOut): ProcessedGraphData {
++export function preprocessGraph(taskList: NodeListOut): ProcessedGraphData {
+     const nested = nestGraphData(taskList);
+     const withComponents = computeConnectedComponents(nested);
+     const styled = baseStyleGraphData(withComponents);
+diff --git a/src/graph/preprocess/styleGraphData.ts b/src/graph/preprocess/styleGraphData.ts
+index 0d3a1cb..b2a4cbe 100644
+--- a/src/graph/preprocess/styleGraphData.ts
++++ b/src/graph/preprocess/styleGraphData.ts
+@@ -196,58 +196,55 @@ export function baseStyleGraphData<G extends NestedGraphData>(graphData: G): Sty
+     } as StyledGraphData<G>;
+ }
+ 
+-/** Apply conditional styling based on node state (e.g., completed, actionable, inferred). */
++/** Apply conditional styling based on node state (e.g., completed, actionable, node type). */
+ export function conditionalStyleGraphData<G extends StyledGraphData<NestedGraphData>>(graphData: G): G {
+-    // Build a lookup for task calculatedCompleted status
+-    const taskCalcCompleted = new Map<string, boolean>();
+-    for (const [tid, t] of Object.entries(graphData.tasks)) {
+-        const d = t.data as { calculatedCompleted?: boolean };
+-        taskCalcCompleted.set(tid, d.calculatedCompleted === true);
+-    }
+-
+     return {
+         ...graphData,
+         tasks: Object.fromEntries(
+             Object.entries(graphData.tasks).map(([taskId, task]) => {
+-                const data = task.data as { calculatedCompleted?: boolean; depsClear?: boolean; inferred?: boolean; completed?: boolean; children?: string[]; calculatedDue?: number | null };
+-                const isInferred = data.inferred;
++                const data = task.data as {
++                    nodeType?: string;
++                    calculatedValue?: boolean;
++                    depsClear?: boolean;
++                    isActionable?: boolean;
++                    calculatedDue?: number | null;
++                };
++
++                // Node type determines shape
++                const nodeType = data.nodeType || "Task";
++                const shapeMap: Record<string, NodeShape> = {
++                    'Task': 'square',
++                    'And': 'upTriangle',
++                    'Or': 'downTriangle',
++                    'Not': 'triangleCircle',
++                    'ExactlyOne': 'circle'
++                };
++                const shape: NodeShape = shapeMap[nodeType] || 'square';
+ 
+-                // Check if blocked: any direct dependency not calculatedCompleted
+-                // children = dependency IDs where this task is fromId (things this depends on)
+-                const childDepIds = data.children || [];
+-                const childTaskIds = childDepIds
+-                    .map(depId => (graphData.dependencies[depId]?.data as { toId?: string })?.toId)
+-                    .filter((id): id is string => id != null);
+-                
+-                // Blocked if any dependency is not calculatedCompleted
+-                const isBlocked = childTaskIds.length > 0 && childTaskIds.some(id => !taskCalcCompleted.get(id));
+-                
+-                // If blocked, ignore completed status - just show as blocked
+-                // Only check completion when deps are clear
+-                const isCompleted = !isBlocked && data.calculatedCompleted;
+-                const isActionable = !isBlocked && !isCompleted;
++                // Backend provides all calculated properties
++                const isBlocked = data.depsClear === false;
++                const isCompleted = data.calculatedValue === true;
++                const isActionable = data.isActionable === true;
+ 
+-                // Shape: upward triangle for inferred (AND gate), square for regular
+-                const shape: NodeShape = isInferred ? 'upTriangle' : 'square';
+-                // Hollow: incomplete/blocked = hollow (background fill), complete = solid (color fill)
++                // Hollow: incomplete = hollow (background fill), complete = solid (color fill)
+                 const hollow = !isCompleted;
+ 
+-                // Label color: urgency-based if has due date and not calculatedCompleted, else white
++                // Label color: urgency-based if has due date and not completed, else white
+                 let labelColor: Color = [1, 1, 1];
+-                if (data.calculatedDue && !data.calculatedCompleted) {
++                if (data.calculatedDue && !isCompleted) {
+                     labelColor = getUrgencyColorFromTimestamp(data.calculatedDue);
+                 }
+ 
+                 let styledTask = { ...task, shape, hollow, labelColor };
+ 
+                 if (isBlocked) {
+-                    // Blocked: dim the node, ignore its own completed status
++                    // Blocked: dim the node
+                     return [taskId, { ...styledTask, brightnessMultiplier: 0.1 }];
+                 }
+                 if (isCompleted) {
+                     return [taskId, { ...styledTask, text: styledTask.text }];
+                 }
+-                // Actionable: deps clear, not completed
++                // Actionable or other states
+                 return [taskId, styledTask];
+             })
+         ),
+diff --git a/src/graph/render/SVGRenderer.ts b/src/graph/render/SVGRenderer.ts
+index 69af173..ef2cad4 100644
+--- a/src/graph/render/SVGRenderer.ts
++++ b/src/graph/render/SVGRenderer.ts
+@@ -270,18 +270,41 @@ export class SVGRenderer {
+         let pathD: string;
+         if (node.shape === 'upTriangle') {
+             // Upright equilateral triangle (AND gate)
+-            // Height of equilateral triangle: h = side * sqrt(3) / 2
+-            // We want it to fit in the same bounding box as the square
+             const side = size;
+             const h = side * Math.sqrt(3) / 2;
+-            // Center the triangle vertically
+             const topY = y - h / 2;
+             const bottomY = y + h / 2;
+             const leftX = x - side / 2;
+             const rightX = x + side / 2;
+             pathD = `M ${x} ${topY} L ${rightX} ${bottomY} L ${leftX} ${bottomY} Z`;
++        } else if (node.shape === 'downTriangle') {
++            // Inverted equilateral triangle (OR gate)
++            const side = size;
++            const h = side * Math.sqrt(3) / 2;
++            const topY = y - h / 2;
++            const bottomY = y + h / 2;
++            const leftX = x - side / 2;
++            const rightX = x + side / 2;
++            // Flip: bottom vertex at top, top vertices at bottom
++            pathD = `M ${x} ${bottomY} L ${rightX} ${topY} L ${leftX} ${topY} Z`;
++        } else if (node.shape === 'circle') {
++            // Circle (ExactlyOne gate)
++            const radius = halfSize;
++            // Use SVG arc commands to draw a circle
++            pathD = `M ${x - radius} ${y} A ${radius} ${radius} 0 1 0 ${x + radius} ${y} A ${radius} ${radius} 0 1 0 ${x - radius} ${y} Z`;
++        } else if (node.shape === 'triangleCircle') {
++            // Triangle with circle overlay (NOT gate)
++            const side = size;
++            const h = side * Math.sqrt(3) / 2;
++            const topY = y - h / 2;
++            const bottomY = y + h / 2;
++            const leftX = x - side / 2;
++            const rightX = x + side / 2;
++            const radius = halfSize * 0.6;
++            // Draw upTriangle, then add circle in the same path
++            pathD = `M ${x} ${topY} L ${rightX} ${bottomY} L ${leftX} ${bottomY} Z M ${x - radius} ${y} A ${radius} ${radius} 0 1 0 ${x + radius} ${y} A ${radius} ${radius} 0 1 0 ${x - radius} ${y} Z`;
+         } else {
+-            // Square
++            // Square (default for Task nodes)
+             const left = x - halfSize;
+             const right = x + halfSize;
+             const top = y - halfSize;
+diff --git a/src/graph/render/utils.ts b/src/graph/render/utils.ts
+index 629e752..72b623b 100644
+--- a/src/graph/render/utils.ts
++++ b/src/graph/render/utils.ts
+@@ -19,7 +19,7 @@ export interface ViewTransform {
+ export type Color = [number, number, number];
+ export type Vec2 = [number, number];
+ 
+-export type NodeShape = 'square' | 'upTriangle';
++export type NodeShape = 'square' | 'upTriangle' | 'downTriangle' | 'circle' | 'triangleCircle';
+ 
+ export interface RenderNode {
+     data: { id: string };
+diff --git a/src/graph/simulation/PositionPersistenceManager.ts b/src/graph/simulation/PositionPersistenceManager.ts
+new file mode 100644
+index 0000000..9669dbb
+--- /dev/null
++++ b/src/graph/simulation/PositionPersistenceManager.ts
+@@ -0,0 +1,285 @@
++/**
++ * ===================================================================
++ * TEMPORARY SOLUTION - Position Persistence Manager
++ * ===================================================================
++ *
++ * This is a TEMPORARY workaround to persist node positions between
++ * sessions while we work on a proper backend storage solution.
++ *
++ * REMOVAL PLAN:
++ * When proper backend position storage is implemented, remove this
++ * entire file and delete the 2-3 lines that instantiate it in
++ * GraphViewerEngine.ts (search for "PositionPersistenceManager").
++ *
++ * DESIGN GOALS:
++ * - Zero dependencies on other graph systems
++ * - Self-contained with clear start/stop lifecycle
++ * - Trivial to remove (no scattered integration points)
++ *
++ * ===================================================================
++ */
++
++import { SimulationState, Position } from "./types";
++
++/**
++ * Configuration for the position persistence manager.
++ */
++export interface PositionPersistenceConfig {
++    /** How often to check positions (ms). Default: 1000 (1 second) */
++    pollInterval?: number;
++
++    /** Maximum movement threshold to consider "settled" (world space units). Default: 0.5 */
++    settlementThreshold?: number;
++
++    /** Debounce duration for saving to storage (ms). Default: 2000 (2 seconds) */
++    saveDebounce?: number;
++
++    /** LocalStorage key for persisted positions. Default: "graph-positions" */
++    storageKey?: string;
++}
++
++const DEFAULT_CONFIG: Required<PositionPersistenceConfig> = {
++    pollInterval: 1000,
++    settlementThreshold: 0.5,
++    saveDebounce: 2000,
++    storageKey: "graph-positions",
++};
++
++/**
++ * Manages automatic persistence of node positions to browser storage.
++ *
++ * Monitors simulation positions and saves them to localStorage when
++ * the graph settles (nodes stop moving). On initialization, loads
++ * saved positions to restore previous layout.
++ *
++ * TEMPORARY: This is a stopgap until backend position storage exists.
++ */
++export class PositionPersistenceManager {
++    private config: Required<PositionPersistenceConfig>;
++    private pollIntervalId: number | null = null;
++    private saveTimeoutId: number | null = null;
++
++    private lastPositions: Record<string, Position> | null = null;
++    private isCurrentlySettled = false;
++
++    /**
++     * Callback to get current simulation state.
++     * Provided by the host (GraphViewerEngine) to avoid tight coupling.
++     */
++    private getSimulationState: (() => SimulationState) | null = null;
++
++    constructor(config: PositionPersistenceConfig = {}) {
++        this.config = { ...DEFAULT_CONFIG, ...config };
++    }
++
++    /**
++     * Start monitoring positions for persistence.
++     *
++     * @param getSimulationState - Function to get current positions
++     */
++    start(getSimulationState: () => SimulationState): void {
++        if (this.pollIntervalId !== null) {
++            console.warn("[PositionPersistence] Already started, ignoring start()");
++            return;
++        }
++
++        this.getSimulationState = getSimulationState;
++        this.lastPositions = null;
++        this.isCurrentlySettled = false;
++
++        // Start polling
++        this.pollIntervalId = window.setInterval(
++            () => this.checkPositions(),
++            this.config.pollInterval
++        );
++
++        console.log("[PositionPersistence] Started monitoring");
++    }
++
++    /**
++     * Stop monitoring and clean up.
++     */
++    stop(): void {
++        if (this.pollIntervalId !== null) {
++            window.clearInterval(this.pollIntervalId);
++            this.pollIntervalId = null;
++        }
++
++        if (this.saveTimeoutId !== null) {
++            window.clearTimeout(this.saveTimeoutId);
++            this.saveTimeoutId = null;
++        }
++
++        this.getSimulationState = null;
++        this.lastPositions = null;
++        this.isCurrentlySettled = false;
++
++        console.log("[PositionPersistence] Stopped monitoring");
++    }
++
++    /**
++     * Load persisted positions from storage.
++     * Call this during initialization to restore previous layout.
++     *
++     * @returns Loaded positions, or empty object if none exist
++     */
++    loadPositions(): Record<string, Position> {
++        try {
++            const stored = localStorage.getItem(this.config.storageKey);
++            if (!stored) {
++                console.log("[PositionPersistence] No saved positions found");
++                return {};
++            }
++
++            const parsed = JSON.parse(stored) as Record<string, Position>;
++            const count = Object.keys(parsed).length;
++            console.log(`[PositionPersistence] Loaded ${count} node positions from storage`);
++            return parsed;
++        } catch (err) {
++            console.error("[PositionPersistence] Failed to load positions:", err);
++            return {};
++        }
++    }
++
++    /**
++     * Manually save current positions to storage.
++     * Normally called automatically when graph settles.
++     */
++    savePositionsNow(): void {
++        if (!this.getSimulationState) {
++            console.warn("[PositionPersistence] Cannot save, not started");
++            return;
++        }
++
++        const state = this.getSimulationState();
++        const positions = state.positions;
++
++        if (Object.keys(positions).length === 0) {
++            console.log("[PositionPersistence] No positions to save (empty graph)");
++            return;
++        }
++
++        try {
++            localStorage.setItem(this.config.storageKey, JSON.stringify(positions));
++            const count = Object.keys(positions).length;
++            console.log(`[PositionPersistence] Saved ${count} node positions to storage`);
++        } catch (err) {
++            console.error("[PositionPersistence] Failed to save positions:", err);
++        }
++    }
++
++    /**
++     * Clear persisted positions from storage.
++     */
++    clearPersistedPositions(): void {
++        try {
++            localStorage.removeItem(this.config.storageKey);
++            console.log("[PositionPersistence] Cleared persisted positions");
++        } catch (err) {
++            console.error("[PositionPersistence] Failed to clear positions:", err);
++        }
++    }
++
++    // ═══════════════════════════════════════════════════════════════════════════
++    // PRIVATE METHODS
++    // ═══════════════════════════════════════════════════════════════════════════
++
++    /**
++     * Poll current positions and check for settlement.
++     * Called by interval timer.
++     */
++    private checkPositions(): void {
++        if (!this.getSimulationState) return;
++
++        const state = this.getSimulationState();
++        const currentPositions = state.positions;
++
++        // Skip if no positions yet
++        if (Object.keys(currentPositions).length === 0) {
++            return;
++        }
++
++        // First poll - store baseline
++        if (this.lastPositions === null) {
++            this.lastPositions = { ...currentPositions };
++            return;
++        }
++
++        // Check if settled
++        const settled = this.isGraphSettled(this.lastPositions, currentPositions);
++
++        // Detect transition: unsettled → settled
++        if (!this.isCurrentlySettled && settled) {
++            console.log("[PositionPersistence] Graph settled, scheduling save...");
++            this.scheduleSave();
++        }
++
++        // Update state
++        this.isCurrentlySettled = settled;
++        this.lastPositions = { ...currentPositions };
++    }
++
++    /**
++     * Determine if graph has settled (all nodes below movement threshold).
++     *
++     * @param prev - Previous positions
++     * @param current - Current positions
++     * @returns true if all nodes have moved less than threshold
++     */
++    private isGraphSettled(
++        prev: Record<string, Position>,
++        current: Record<string, Position>
++    ): boolean {
++        const threshold = this.config.settlementThreshold;
++
++        // Check all nodes that exist in both snapshots
++        for (const nodeId in current) {
++            if (!(nodeId in prev)) {
++                // New node appeared - not settled
++                return false;
++            }
++
++            const prevPos = prev[nodeId];
++            const currPos = current[nodeId];
++
++            const dx = currPos.x - prevPos.x;
++            const dy = currPos.y - prevPos.y;
++            const distance = Math.sqrt(dx * dx + dy * dy);
++
++            if (distance > threshold) {
++                // This node moved too much - not settled
++                return false;
++            }
++        }
++
++        // Check if any nodes were removed
++        for (const nodeId in prev) {
++            if (!(nodeId in current)) {
++                // Node disappeared - not settled
++                return false;
++            }
++        }
++
++        return true;
++    }
++
++    /**
++     * Schedule a debounced save to storage.
++     * Multiple calls within debounce window will reset the timer.
++     */
++    private scheduleSave(): void {
++        // Clear existing timeout
++        if (this.saveTimeoutId !== null) {
++            window.clearTimeout(this.saveTimeoutId);
++        }
++
++        // Schedule new save
++        this.saveTimeoutId = window.setTimeout(
++            () => {
++                this.savePositionsNow();
++                this.saveTimeoutId = null;
++            },
++            this.config.saveDebounce
++        );
++    }
++}
+diff --git a/src/graph/simulation/REMOVE_EDGE_CROSSING_DETECTOR.md b/src/graph/simulation/REMOVE_EDGE_CROSSING_DETECTOR.md
+new file mode 100644
+index 0000000..5cc51a4
+--- /dev/null
++++ b/src/graph/simulation/REMOVE_EDGE_CROSSING_DETECTOR.md
+@@ -0,0 +1,102 @@
++# Removing Edge Crossing Detector (Modular Feature)
++
++## What This Does
++
++Detects edge crossings in saved layouts to determine if they should be preserved or re-computed. If saved positions have few edge crossings (good layout), WebCola skips the unconstrained settling phase and preserves them. If many crossings (poor layout), it does a full two-phase re-layout.
++
++## When to Remove
++
++- If you want WebCola to always do two-phase initialization (unconstrained → constrained)
++- If edge crossing detection is too expensive for your use case
++- If you prefer simpler logic (always re-layout on first load)
++
++## How to Remove (2 steps)
++
++### Step 1: Delete the detector file
++
++```bash
++rm src/graph/simulation/edgeCrossingDetector.ts
++rm src/graph/simulation/REMOVE_EDGE_CROSSING_DETECTOR.md  # This file
++```
++
++### Step 2: Remove integration from webColaEngine.ts
++
++Search for `MODULAR` comments and delete marked sections:
++
++**Delete import:**
++```typescript
++// DELETE THIS LINE:
++import { hasGoodLayout } from "../edgeCrossingDetector";
++```
++
++**Replace the if block (around line 288):**
++
++**BEFORE (with edge crossing detection):**
++```typescript
++if (isFirstInit) {
++    // MODULAR: Check if saved positions are high quality (few edge crossings)
++    // DELETE these 5 lines to always use two-phase init:
++    const edges = Object.values(graph.dependencies).map(dep => ({
++        fromId: dep.data.fromId,
++        toId: dep.data.toId
++    }));
++    const hasGoodSavedLayout = hasGoodLayout(prevState.positions, edges);
++
++    if (hasGoodSavedLayout) {
++        // Saved positions are good quality - skip unconstrained phase
++        console.log("[WebCola] Preserved saved positions (good layout detected)");
++        this.constraintsApplied = true;
++        this.lastMutationTime = null;
++        this.rebuildLayout(true);
++    } else {
++        // Saved positions are poor quality or missing - do two-phase init
++        console.log("[WebCola] Starting two-phase init (edge crossings detected or no saved positions)");
++        this.lastMutationTime = performance.now();
++        this.constraintsApplied = false;
++        this.rebuildLayout(false);
++    }
++}
++```
++
++**AFTER (always two-phase init):**
++```typescript
++if (isFirstInit) {
++    // First initialization: start without constraints, apply after delay
++    this.lastMutationTime = performance.now();
++    this.constraintsApplied = false;
++    this.rebuildLayout(false);
++}
++```
++
++## Configuration (Before Removal)
++
++If you want to adjust thresholds instead of removing:
++
++**Option 1: Make it more strict (preserve fewer layouts)**
++```typescript
++const hasGoodSavedLayout = hasGoodLayout(prevState.positions, edges, {
++    threshold: 0.02  // Only preserve if < 2% edge crossings (stricter)
++});
++```
++
++**Option 2: Make it more lenient (preserve more layouts)**
++```typescript
++const hasGoodSavedLayout = hasGoodLayout(prevState.positions, edges, {
++    threshold: 0.10  // Preserve even with 10% edge crossings (looser)
++});
++```
++
++**Option 3: Adjust sampling for large graphs**
++```typescript
++const hasGoodSavedLayout = hasGoodLayout(prevState.positions, edges, {
++    samplingThreshold: 200,  // Use sampling only for >200 edges
++    sampleSize: 500          // Check 500 samples instead of 200
++});
++```
++
++## Testing After Removal
++
++1. Clear localStorage: `localStorage.removeItem('graph-positions')`
++2. Load a graph and let it settle
++3. Reload page
++4. Positions should now always do two-phase init (positions will shift during first second)
+diff --git a/src/graph/simulation/REMOVE_POSITION_PERSISTENCE.md b/src/graph/simulation/REMOVE_POSITION_PERSISTENCE.md
+new file mode 100644
+index 0000000..e74d267
+--- /dev/null
++++ b/src/graph/simulation/REMOVE_POSITION_PERSISTENCE.md
+@@ -0,0 +1,58 @@
++# Removing Position Persistence (Temporary Feature)
++
++## Why This Exists
++
++This is a **temporary client-side solution** to persist node positions between browser sessions. It stores positions in `localStorage` and restores them on page load.
++
++**This should be removed** once proper backend position storage is implemented.
++
++## How to Remove (2 steps)
++
++### Step 1: Delete the persistence file
++
++```bash
++rm src/graph/simulation/PositionPersistenceManager.ts
++rm src/graph/simulation/REMOVE_POSITION_PERSISTENCE.md  # This file
++```
++
++### Step 2: Remove integration from GraphViewerEngine.ts
++
++Search for `TEMPORARY` comments and delete the marked lines:
++
++```typescript
++// DELETE THIS IMPORT:
++import { PositionPersistenceManager } from "./simulation/PositionPersistenceManager";
++
++// DELETE THIS FIELD:
++private positionPersistence: PositionPersistenceManager;
++
++// DELETE THIS BLOCK (3 lines):
++this.positionPersistence = new PositionPersistenceManager();
++const savedPositions = this.positionPersistence.loadPositions();
++if (Object.keys(savedPositions).length > 0) {
++    this.simulationState = { positions: savedPositions };
++}
++
++// DELETE THIS LINE:
++this.positionPersistence.start(() => this.simulationState);
++
++// DELETE THIS LINE:
++this.positionPersistence.stop();
++```
++
++### Step 3: Remove export from simulation/index.ts
++
++```typescript
++// DELETE THIS EXPORT:
++export * from "./PositionPersistenceManager";
++```
++
++## That's It!
++
++The feature is completely removed with no orphaned code.
++
++## Testing After Removal
++
++1. Clear localStorage: `localStorage.removeItem('graph-positions')`
++2. Reload page - positions should now be computed fresh each time
++3. Backend position storage should handle persistence instead
+diff --git a/src/graph/simulation/edgeCrossingDetector.ts b/src/graph/simulation/edgeCrossingDetector.ts
+new file mode 100644
+index 0000000..c436fee
+--- /dev/null
++++ b/src/graph/simulation/edgeCrossingDetector.ts
+@@ -0,0 +1,263 @@
++/**
++ * ===================================================================
++ * MODULAR UTILITY - Edge Crossing Detection
++ * ===================================================================
++ *
++ * Detects edge crossings in a graph layout to assess layout quality.
++ * Used to determine whether saved positions should be preserved or
++ * whether a full layout re-computation is needed.
++ *
++ * REMOVAL:
++ * Delete this file and remove the import + 1 function call in
++ * webColaEngine.ts (search for "edgeCrossingDetector").
++ *
++ * ===================================================================
++ */
++
++import { Position } from "./types";
++
++/**
++ * Edge representation for crossing detection.
++ */
++export interface EdgeForCrossing {
++    fromId: string;
++    toId: string;
++}
++
++/**
++ * Configuration for edge crossing detection.
++ */
++export interface EdgeCrossingConfig {
++    /**
++     * Threshold for determining "good" layout (ratio of crossings).
++     * Default: 0.05 (5% of edge pairs can cross)
++     */
++    threshold?: number;
++
++    /**
++     * For large graphs, use sampling instead of checking all pairs.
++     * Default: 100 edges (if graph has more, use sampling)
++     */
++    samplingThreshold?: number;
++
++    /**
++     * Number of samples to check when sampling.
++     * Default: 200
++     */
++    sampleSize?: number;
++}
++
++const DEFAULT_CONFIG: Required<EdgeCrossingConfig> = {
++    threshold: 0.05,
++    samplingThreshold: 100,
++    sampleSize: 200,
++};
++
++/**
++ * Main API: Check if a layout has good quality (few edge crossings).
++ *
++ * @param positions - Node positions in world space
++ * @param edges - Graph edges
++ * @param config - Optional configuration
++ * @returns true if crossing ratio is below threshold (good layout)
++ */
++export function hasGoodLayout(
++    positions: Record<string, Position>,
++    edges: EdgeForCrossing[],
++    config: EdgeCrossingConfig = {}
++): boolean {
++    const cfg = { ...DEFAULT_CONFIG, ...config };
++
++    if (edges.length < 2) {
++        // Trivial graph - no crossings possible
++        return true;
++    }
++
++    // Choose strategy based on graph size
++    let crossingRatio: number;
++    if (edges.length <= cfg.samplingThreshold) {
++        // Small graph - check all pairs precisely
++        crossingRatio = calculateExactCrossingRatio(positions, edges);
++    } else {
++        // Large graph - use sampling for speed
++        crossingRatio = estimateCrossingRatio(positions, edges, cfg.sampleSize);
++    }
++
++    return crossingRatio < cfg.threshold;
++}
++
++// ═══════════════════════════════════════════════════════════════════════════
++// EXACT CROSSING DETECTION (for small graphs)
++// ═══════════════════════════════════════════════════════════════════════════
++
++/**
++ * Calculate exact crossing ratio by checking all edge pairs.
++ * Optimized with bounding box pre-check for fast rejection.
++ *
++ * Complexity: O(E²) worst case, but typically much faster due to rejection.
++ */
++function calculateExactCrossingRatio(
++    positions: Record<string, Position>,
++    edges: EdgeForCrossing[]
++): number {
++    let crossings = 0;
++    let validPairs = 0;
++
++    // Check all distinct pairs of edges
++    for (let i = 0; i < edges.length; i++) {
++        for (let j = i + 1; j < edges.length; j++) {
++            const e1 = edges[i];
++            const e2 = edges[j];
++
++            // Skip if edges share a node (they touch at endpoint, not a crossing)
++            if (edgesShareNode(e1, e2)) continue;
++
++            // Get positions (skip if any missing)
++            const p1 = positions[e1.fromId];
++            const p2 = positions[e1.toId];
++            const p3 = positions[e2.fromId];
++            const p4 = positions[e2.toId];
++            if (!p1 || !p2 || !p3 || !p4) continue;
++
++            validPairs++;
++
++            // Fast bounding box rejection (eliminates ~90% of pairs)
++            if (!boundingBoxesOverlap(p1, p2, p3, p4)) continue;
++
++            // Expensive line segment intersection test
++            if (segmentsIntersect(p1, p2, p3, p4)) {
++                crossings++;
++            }
++        }
++    }
++
++    return validPairs > 0 ? crossings / validPairs : 0;
++}
++
++// ═══════════════════════════════════════════════════════════════════════════
++// SAMPLED CROSSING DETECTION (for large graphs)
++// ═══════════════════════════════════════════════════════════════════════════
++
++/**
++ * Estimate crossing ratio by sampling random edge pairs.
++ * Much faster for large graphs, with small accuracy trade-off.
++ *
++ * Complexity: O(sampleSize) - constant time regardless of graph size.
++ */
++function estimateCrossingRatio(
++    positions: Record<string, Position>,
++    edges: EdgeForCrossing[],
++    sampleSize: number
++): number {
++    let crossings = 0;
++    let validSamples = 0;
++    const maxSamples = Math.min(sampleSize, edges.length * (edges.length - 1) / 2);
++
++    for (let s = 0; s < maxSamples; s++) {
++        // Pick two random distinct edges
++        const i = Math.floor(Math.random() * edges.length);
++        let j = Math.floor(Math.random() * (edges.length - 1));
++        if (j >= i) j++; // Ensure j ≠ i
++
++        const e1 = edges[i];
++        const e2 = edges[j];
++
++        // Same logic as exact method
++        if (edgesShareNode(e1, e2)) continue;
++
++        const p1 = positions[e1.fromId];
++        const p2 = positions[e1.toId];
++        const p3 = positions[e2.fromId];
++        const p4 = positions[e2.toId];
++        if (!p1 || !p2 || !p3 || !p4) continue;
++
++        validSamples++;
++
++        if (!boundingBoxesOverlap(p1, p2, p3, p4)) continue;
++
++        if (segmentsIntersect(p1, p2, p3, p4)) {
++            crossings++;
++        }
++    }
++
++    return validSamples > 0 ? crossings / validSamples : 0;
++}
++
++// ═══════════════════════════════════════════════════════════════════════════
++// GEOMETRIC UTILITIES
++// ═══════════════════════════════════════════════════════════════════════════
++
++/**
++ * Check if two edges share a common node (endpoint).
++ */
++function edgesShareNode(e1: EdgeForCrossing, e2: EdgeForCrossing): boolean {
++    return (
++        e1.fromId === e2.fromId ||
++        e1.fromId === e2.toId ||
++        e1.toId === e2.fromId ||
++        e1.toId === e2.toId
++    );
++}
++
++/**
++ * Fast rejection: Check if bounding boxes of two line segments overlap.
++ * Eliminates ~90% of pairs without expensive intersection test.
++ */
++function boundingBoxesOverlap(
++    p1: Position,
++    p2: Position,
++    p3: Position,
++    p4: Position
++): boolean {
++    const minX1 = Math.min(p1.x, p2.x);
++    const maxX1 = Math.max(p1.x, p2.x);
++    const minY1 = Math.min(p1.y, p2.y);
++    const maxY1 = Math.max(p1.y, p2.y);
++
++    const minX2 = Math.min(p3.x, p4.x);
++    const maxX2 = Math.max(p3.x, p4.x);
++    const minY2 = Math.min(p3.y, p4.y);
++    const maxY2 = Math.max(p3.y, p4.y);
++
++    // Boxes overlap if they're NOT separated in either axis
++    return !(maxX1 < minX2 || maxX2 < minX1 || maxY1 < minY2 || maxY2 < minY1);
++}
++
++/**
++ * Line segment intersection test using cross products.
++ * Returns true if segments (p1,p2) and (p3,p4) intersect in their interior.
++ *
++ * Algorithm: Parametric line equations + cross products
++ * - Line 1: p1 + t1 * (p2 - p1), where t1 ∈ [0, 1]
++ * - Line 2: p3 + t2 * (p4 - p3), where t2 ∈ [0, 1]
++ * - Segments intersect if both t1 and t2 are in [0, 1]
++ */
++function segmentsIntersect(
++    p1: Position,
++    p2: Position,
++    p3: Position,
++    p4: Position
++): boolean {
++    // Direction vectors
++    const d1x = p2.x - p1.x;
++    const d1y = p2.y - p1.y;
++    const d2x = p4.x - p3.x;
++    const d2y = p4.y - p3.y;
++
++    // Vector from p1 to p3
++    const d3x = p3.x - p1.x;
++    const d3y = p3.y - p1.y;
++
++    // Cross product of d1 and d2 (determinant)
++    const cross = d1x * d2y - d1y * d2x;
++
++    // Parallel or collinear - no intersection (or infinite intersections)
++    if (Math.abs(cross) < 1e-10) return false;
++
++    // Solve for parametric t values
++    const t1 = (d3x * d2y - d3y * d2x) / cross;
++    const t2 = (d3x * d1y - d3y * d1x) / cross;
++
++    // Intersection exists if both parameters are in [0, 1]
++    return t1 >= 0 && t1 <= 1 && t2 >= 0 && t2 <= 1;
++}
+diff --git a/src/graph/simulation/engines/webColaEngine.ts b/src/graph/simulation/engines/webColaEngine.ts
+index 531c1ee..8c08434 100644
+--- a/src/graph/simulation/engines/webColaEngine.ts
++++ b/src/graph/simulation/engines/webColaEngine.ts
+@@ -18,6 +18,8 @@ import {
+     PinStatus,
+ } from "../types";
+ import { NestedGraphData } from "../../preprocess/nestGraphData";
++// MODULAR: Edge crossing detector (delete this line + 1 function call to remove)
++import { hasGoodLayout } from "../edgeCrossingDetector";
+ 
+ // ═══════════════════════════════════════════════════════════════════════════
+ // CUSTOM LAYOUT WITH EXPOSED TICK
+@@ -286,10 +288,27 @@ export class WebColaEngine implements SimulationEngine {
+             this.initialized = true;
+ 
+             if (isFirstInit) {
+-                // First initialization: start without constraints, apply after delay
+-                this.lastMutationTime = performance.now();
+-                this.constraintsApplied = false;
+-                this.rebuildLayout(false);
++                // MODULAR: Check if saved positions are high quality (few edge crossings)
++                // DELETE these 5 lines to always use two-phase init:
++                const edges = Object.values(graph.dependencies).map(dep => ({
++                    fromId: dep.data.fromId,
++                    toId: dep.data.toId
++                }));
++                const hasGoodSavedLayout = hasGoodLayout(prevState.positions, edges);
++
++                if (hasGoodSavedLayout) {
++                    // Saved positions are good quality - skip unconstrained phase
++                    console.log("[WebCola] Preserved saved positions (good layout detected)");
++                    this.constraintsApplied = true;
++                    this.lastMutationTime = null;
++                    this.rebuildLayout(true);
++                } else {
++                    // Saved positions are poor quality or missing - do two-phase init
++                    console.log("[WebCola] Starting two-phase init (edge crossings detected or no saved positions)");
++                    this.lastMutationTime = performance.now();
++                    this.constraintsApplied = false;
++                    this.rebuildLayout(false);
++                }
+             } else {
+                 // Subsequent changes: go straight to constrained layout
+                 this.constraintsApplied = true;
+diff --git a/src/graph/simulation/index.ts b/src/graph/simulation/index.ts
+index 2d3f2f9..ca6d232 100644
+--- a/src/graph/simulation/index.ts
++++ b/src/graph/simulation/index.ts
+@@ -7,3 +7,5 @@
+ export * from "./types";
+ export * from "./utils";
+ export * from "./engines";
++// TEMPORARY: Position persistence (remove when backend storage exists)
++export * from "./PositionPersistenceManager";
+diff --git a/src/stores/todoStore.ts b/src/stores/todoStore.ts
+index a495d53..2442889 100644
+--- a/src/stores/todoStore.ts
++++ b/src/stores/todoStore.ts
+@@ -1,6 +1,6 @@
+ import { create } from 'zustand';
+ import {
+-    type TaskListOut,
++    type NodeListOut,
+     DefaultApi,
+     Configuration,
+     subscribeToTasks,
+@@ -17,7 +17,7 @@ export type ConnectionStatus = 'disconnected' | 'connecting' | 'connected' | 'er
+ 
+ interface TodoStore {
+     // State
+-    graphData: TaskListOut | null;
++    graphData: NodeListOut | null;
+     cursor: string | null;
+     navInfoText: string | null;
+     navigationMode: NavigationMode;
+@@ -91,12 +91,14 @@ export const useTodoStore = create<TodoStore>((set, get) => ({
+         const api = new DefaultApi(new Configuration({ basePath: baseUrl }));
+ 
+         const unsubscribe = subscribeToTasks(
+-            (data) => set({
+-                graphData: data,
+-                connectionStatus: 'connected',
+-                lastDataReceived: Date.now(),
+-                lastError: null,
+-            }),
++            (data) => {
++                set({
++                    graphData: data,
++                    connectionStatus: 'connected',
++                    lastDataReceived: Date.now(),
++                    lastError: null,
++                });
++            },
+             {
+                 baseUrl,
+                 onError: (err) => {
