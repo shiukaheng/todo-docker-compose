@@ -43,6 +43,11 @@ cleanup() {
 
 trap cleanup SIGINT SIGTERM EXIT
 
+# Check if port is in use
+check_port() {
+    lsof -i :$1 >/dev/null 2>&1 || ss -tln | grep -q ":$1 " 2>/dev/null
+}
+
 # Check if Neo4j is already accessible on port 7687
 check_neo4j() {
     if command -v nc &> /dev/null; then
@@ -55,38 +60,7 @@ check_neo4j() {
     fi
 }
 
-# Start Neo4j in Docker if not already running
-if [ "$SKIP_NEO4J" = true ]; then
-    echo -e "${YELLOW}Skipping Neo4j startup (using existing instance)${NC}"
-    if ! check_neo4j; then
-        echo -e "${RED}Warning: Cannot connect to Neo4j on port 7687${NC}"
-    fi
-else
-    echo -e "${BLUE}Checking Neo4j...${NC}"
-    if check_neo4j; then
-        echo -e "${GREEN}Neo4j already accessible on port 7687 (using existing instance)${NC}"
-    elif docker ps | grep -q neo4j-dev; then
-        echo -e "${GREEN}Neo4j container already running${NC}"
-    else
-        echo -e "${GREEN}Starting Neo4j container...${NC}"
-        docker run -d \
-            --name neo4j-dev \
-            -p 7474:7474 \
-            -p 7687:7687 \
-            -e NEO4J_AUTH=neo4j/password \
-            --rm \
-            neo4j:5
-        echo -e "${GREEN}Waiting for Neo4j to be ready...${NC}"
-        sleep 10
-    fi
-fi
-
-# Check if port is in use
-check_port() {
-    lsof -i :$1 >/dev/null 2>&1 || ss -tln | grep -q ":$1 " 2>/dev/null
-}
-
-# Check all required ports
+# Check all required ports BEFORE starting anything
 echo -e "${BLUE}Checking ports...${NC}"
 PORTS_IN_USE=()
 
@@ -98,12 +72,22 @@ if check_port 3000; then
     echo -e "${YELLOW}Warning: Port 3000 (frontend) is in use - Vite will auto-select another port${NC}"
 fi
 
+# Only check Neo4j ports if we're planning to start Neo4j
 if [ "$SKIP_NEO4J" != true ]; then
-    if check_port 7474; then
-        PORTS_IN_USE+=("7474 (Neo4j HTTP)")
-    fi
-    if check_port 7687; then
-        PORTS_IN_USE+=("7687 (Neo4j Bolt)")
+    # Check if Neo4j is accessible but not via our docker container
+    if check_neo4j && ! docker ps | grep -q neo4j-dev; then
+        echo -e "${GREEN}Neo4j already accessible on port 7687 (using existing instance)${NC}"
+        SKIP_NEO4J=true
+    elif check_port 7474 || check_port 7687; then
+        if ! docker ps | grep -q neo4j-dev; then
+            # Ports in use but not by our container
+            if check_port 7474; then
+                PORTS_IN_USE+=("7474 (Neo4j HTTP)")
+            fi
+            if check_port 7687; then
+                PORTS_IN_USE+=("7687 (Neo4j Bolt)")
+            fi
+        fi
     fi
 fi
 
@@ -117,6 +101,24 @@ if [ ${#PORTS_IN_USE[@]} -gt 0 ]; then
     echo -e "\n${YELLOW}Or check what's using them:${NC}"
     echo -e "${YELLOW}  sudo lsof -i :8000 -i :7474 -i :7687${NC}"
     exit 1
+fi
+
+# Start Neo4j in Docker if needed
+if [ "$SKIP_NEO4J" = true ]; then
+    echo -e "${YELLOW}Using existing Neo4j instance${NC}"
+elif docker ps | grep -q neo4j-dev; then
+    echo -e "${GREEN}Neo4j container already running${NC}"
+else
+    echo -e "${GREEN}Starting Neo4j container...${NC}"
+    docker run -d \
+        --name neo4j-dev \
+        -p 7474:7474 \
+        -p 7687:7687 \
+        -e NEO4J_AUTH=neo4j/password \
+        --rm \
+        neo4j:5
+    echo -e "${GREEN}Waiting for Neo4j to be ready...${NC}"
+    sleep 10
 fi
 
 # Start backend with uv
