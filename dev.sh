@@ -86,13 +86,41 @@ check_port() {
     lsof -i :$1 >/dev/null 2>&1 || ss -tln | grep -q ":$1 " 2>/dev/null
 }
 
-# Start backend with uv
-echo -e "${BLUE}Starting backend...${NC}"
+# Check all required ports
+echo -e "${BLUE}Checking ports...${NC}"
+PORTS_IN_USE=()
+
 if check_port 8000; then
-    echo -e "${RED}Error: Port 8000 is already in use${NC}"
-    echo -e "${YELLOW}Kill the existing process with: sudo lsof -ti:8000 | xargs kill -9${NC}"
+    PORTS_IN_USE+=("8000 (backend)")
+fi
+
+if check_port 3000; then
+    echo -e "${YELLOW}Warning: Port 3000 (frontend) is in use - Vite will auto-select another port${NC}"
+fi
+
+if [ "$SKIP_NEO4J" != true ]; then
+    if check_port 7474; then
+        PORTS_IN_USE+=("7474 (Neo4j HTTP)")
+    fi
+    if check_port 7687; then
+        PORTS_IN_USE+=("7687 (Neo4j Bolt)")
+    fi
+fi
+
+if [ ${#PORTS_IN_USE[@]} -gt 0 ]; then
+    echo -e "${RED}Error: The following ports are already in use:${NC}"
+    for port in "${PORTS_IN_USE[@]}"; do
+        echo -e "${RED}  - $port${NC}"
+    done
+    echo -e "\n${YELLOW}To kill processes using these ports:${NC}"
+    echo -e "${YELLOW}  sudo lsof -ti:8000,7474,7687 | xargs kill -9${NC}"
+    echo -e "\n${YELLOW}Or check what's using them:${NC}"
+    echo -e "${YELLOW}  sudo lsof -i :8000 -i :7474 -i :7687${NC}"
     exit 1
 fi
+
+# Start backend with uv
+echo -e "${BLUE}Starting backend...${NC}"
 
 cd backend/repo/backend
 if ! command -v uv &> /dev/null; then
