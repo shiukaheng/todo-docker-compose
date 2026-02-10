@@ -1,9 +1,29 @@
 #!/bin/bash
 set -e
 
+# Parse arguments
+SKIP_NEO4J=false
+for arg in "$@"; do
+    case $arg in
+        --skip-neo4j|--existing-neo4j)
+            SKIP_NEO4J=true
+            shift
+            ;;
+        -h|--help)
+            echo "Usage: $0 [OPTIONS]"
+            echo ""
+            echo "Options:"
+            echo "  --skip-neo4j, --existing-neo4j    Use existing Neo4j instance instead of starting Docker container"
+            echo "  -h, --help                        Show this help message"
+            exit 0
+            ;;
+    esac
+done
+
 # Colors for output
 GREEN='\033[0;32m'
 BLUE='\033[0;34m'
+YELLOW='\033[0;33m'
 RED='\033[0;31m'
 NC='\033[0m' # No Color
 
@@ -23,21 +43,42 @@ cleanup() {
 
 trap cleanup SIGINT SIGTERM EXIT
 
+# Check if Neo4j is already accessible on port 7687
+check_neo4j() {
+    if command -v nc &> /dev/null; then
+        nc -z localhost 7687 2>/dev/null
+    elif command -v timeout &> /dev/null; then
+        timeout 1 bash -c "</dev/tcp/localhost/7687" 2>/dev/null
+    else
+        # Fallback: just return success
+        return 0
+    fi
+}
+
 # Start Neo4j in Docker if not already running
-echo -e "${BLUE}Checking Neo4j...${NC}"
-if ! docker ps | grep -q neo4j-dev; then
-    echo -e "${GREEN}Starting Neo4j container...${NC}"
-    docker run -d \
-        --name neo4j-dev \
-        -p 7474:7474 \
-        -p 7687:7687 \
-        -e NEO4J_AUTH=neo4j/password \
-        --rm \
-        neo4j:5
-    echo -e "${GREEN}Waiting for Neo4j to be ready...${NC}"
-    sleep 10
+if [ "$SKIP_NEO4J" = true ]; then
+    echo -e "${YELLOW}Skipping Neo4j startup (using existing instance)${NC}"
+    if ! check_neo4j; then
+        echo -e "${RED}Warning: Cannot connect to Neo4j on port 7687${NC}"
+    fi
 else
-    echo -e "${GREEN}Neo4j already running${NC}"
+    echo -e "${BLUE}Checking Neo4j...${NC}"
+    if check_neo4j; then
+        echo -e "${GREEN}Neo4j already accessible on port 7687 (using existing instance)${NC}"
+    elif docker ps | grep -q neo4j-dev; then
+        echo -e "${GREEN}Neo4j container already running${NC}"
+    else
+        echo -e "${GREEN}Starting Neo4j container...${NC}"
+        docker run -d \
+            --name neo4j-dev \
+            -p 7474:7474 \
+            -p 7687:7687 \
+            -e NEO4J_AUTH=neo4j/password \
+            --rm \
+            neo4j:5
+        echo -e "${GREEN}Waiting for Neo4j to be ready...${NC}"
+        sleep 10
+    fi
 fi
 
 # Start backend with uv
