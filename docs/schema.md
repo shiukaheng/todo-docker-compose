@@ -423,3 +423,120 @@ Where:
 - **Tasks vs Gates:** Tasks have manual `completed`, Gates compute from inputs
 - **Gate Auto-calculation:** Gates always compute value, never manually set
 - **Temporal Logic:** `DEPENDS_ON.created_at` reserved for future completion invalidation feature
+
+---
+
+# Plans (Organizational Layer)
+
+## Overview
+
+Plans are a **separate organizational system** that sits on top of the boolean graph. They are NOT nodes in the graph and don't participate in the boolean logic. Plans simply provide a way to define ordered sequences of existing nodes for UI/workflow purposes.
+
+## Plan Schema
+
+### Plan Entity
+```cypher
+(:Plan {
+  id: string,              // Unique identifier (REQUIRED)
+  text: string | null,     // Human-readable description (e.g., "Q1 Release Plan")
+  created_at: int,         // Creation timestamp (REQUIRED)
+  updated_at: int          // Last update timestamp (REQUIRED)
+})
+```
+
+**Key Properties:**
+- **NOT a :Node** - Plans are completely separate from the boolean graph
+- **NO completion status** - Plans don't have `completed`, `calculated_value`, or `is_actionable`
+- **NO due date** - Plans don't have their own due dates (steps have their own)
+- **Never plotted** - Plans don't appear as nodes in graph visualization
+
+### STEP Relationship
+```cypher
+(Plan)-[:STEP {
+  id: string,              // Unique identifier (UUID, REQUIRED)
+  order: float,            // Step order (REQUIRED, e.g., 1.0, 2.0, 2.5, 3.0)
+  created_at: int | null   // When step was added (optional)
+}]->(Node)
+```
+
+**Semantics:**
+- Plans point to existing Nodes in the boolean graph via STEP relationships
+- `order` is a float to allow insertion between steps (e.g., insert 2.5 between 2.0 and 3.0)
+- Steps point to ANY node type: Task, And, Or, Not, ExactlyOne
+- The referenced Nodes exist independently and participate in the boolean graph normally
+- Plans are purely organizational - they don't affect node completion logic
+
+## Constraints
+
+```cypher
+// All plan IDs must be unique
+CREATE CONSTRAINT plan_id_unique IF NOT EXISTS
+FOR (p:Plan) REQUIRE p.id IS UNIQUE;
+
+// All STEP relationship IDs must be unique
+CREATE CONSTRAINT step_id_unique IF NOT EXISTS
+FOR ()-[r:STEP]->() REQUIRE r.id IS UNIQUE;
+```
+
+## Use Cases
+
+- **Project plans**: "Q1 Release Plan" with ordered milestones
+- **Onboarding checklists**: Step-by-step processes for new users
+- **Workflows**: Standard operating procedures with ordered steps
+- **Roadmaps**: High-level sequences of features/goals
+- **Nested plans**: Plans can reference other nodes that have their own plans
+
+## Example Queries
+
+### Create a Plan
+```cypher
+// Create the plan
+CREATE (:Plan {
+  id: "q1-release",
+  text: "Q1 Release Plan",
+  created_at: timestamp(),
+  updated_at: timestamp()
+});
+
+// Link existing nodes as steps
+MATCH (plan:Plan {id: "q1-release"})
+MATCH (step1:Node {id: "design-review"})
+MATCH (step2:Node {id: "implementation"})
+MATCH (step3:Node {id: "testing"})
+MATCH (step4:Node {id: "deployment"})
+CREATE (plan)-[:STEP {id: randomUUID(), order: 1.0}]->(step1)
+CREATE (plan)-[:STEP {id: randomUUID(), order: 2.0}]->(step2)
+CREATE (plan)-[:STEP {id: randomUUID(), order: 3.0}]->(step3)
+CREATE (plan)-[:STEP {id: randomUUID(), order: 4.0}]->(step4);
+```
+
+### Get Plan Steps in Order
+```cypher
+MATCH (plan:Plan {id: $plan_id})-[step:STEP]->(node:Node)
+RETURN node, step.order AS order
+ORDER BY step.order ASC;
+```
+
+### Insert Step Between Existing Steps
+```cypher
+// Insert between step 2.0 and step 3.0
+MATCH (plan:Plan {id: $plan_id})
+MATCH (new_step:Node {id: $new_step_id})
+CREATE (plan)-[:STEP {id: randomUUID(), order: 2.5}]->(new_step);
+```
+
+### Get All Plans Containing a Node
+```cypher
+MATCH (plan:Plan)-[step:STEP]->(node:Node {id: $node_id})
+RETURN plan, step.order
+ORDER BY plan.text, step.order;
+```
+
+## Notes
+
+- **Separation of Concerns**: Plans are organizational metadata, Nodes are the actual work graph
+- **UI Layer**: Plans are primarily for UI presentation - showing ordered sequences
+- **No Circular References**: A Plan should not reference itself via steps (no validation enforced)
+- **Multiple Plans**: A single Node can appear in multiple Plans with different orders
+- **Independent Completion**: Node completion is determined by boolean logic, NOT by plan membership
+- **Future Extensions**: Could add plan-level metadata like owner, status, tags, etc.
