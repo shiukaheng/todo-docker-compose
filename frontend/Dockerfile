@@ -2,10 +2,10 @@ FROM node:20-alpine AS builder
 
 WORKDIR /app
 
-COPY repo/package*.json ./
+COPY frontend/repo/package*.json ./
 RUN npm ci
 
-COPY repo/ .
+COPY frontend/repo/ .
 
 # Allow configurable base path (defaults to / for root)
 ARG BASE_PATH=/
@@ -16,9 +16,9 @@ FROM nginx:alpine
 
 COPY --from=builder /app/dist /usr/share/nginx/html
 
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY frontend/nginx.conf /etc/nginx/conf.d/default.conf
 
-COPY docker-entrypoint.sh /docker-entrypoint.sh
+COPY frontend/docker-entrypoint.sh /docker-entrypoint.sh
 RUN chmod +x /docker-entrypoint.sh
 
 EXPOSE 80

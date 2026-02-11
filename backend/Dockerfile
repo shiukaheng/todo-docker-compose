@@ -4,7 +4,7 @@ WORKDIR /app
 
 RUN pip install --no-cache-dir build
 
-COPY repo/backend/pyproject.toml ./
+COPY backend/repo/backend/pyproject.toml ./
 
 RUN pip install --no-cache-dir .
 
@@ -15,7 +15,7 @@ WORKDIR /app
 COPY --from=builder /usr/local/lib/python3.11/site-packages /usr/local/lib/python3.11/site-packages
 COPY --from=builder /usr/local/bin /usr/local/bin
 
-COPY repo/backend/app ./app
+COPY backend/repo/backend/app ./app
 
 ENV NEO4J_URL=bolt://neo4j:7687
 ENV NEO4J_USER=neo4j
