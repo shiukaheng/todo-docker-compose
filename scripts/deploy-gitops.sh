@@ -11,7 +11,7 @@ GITOPS_REPO="../../k3s-ldn-gitops"
 DEPLOYMENT_FILE="apps/todo/deployment.yaml"
 
 # Get commit hashes
-cd "$(dirname "$0")"
+cd "$(dirname "$0")/.."
 BACKEND_COMMIT=$(cd backend/repo && git rev-parse --short HEAD)
 FRONTEND_COMMIT=$(cd frontend/repo && git rev-parse --short HEAD)
 
@@ -31,6 +31,7 @@ docker buildx build --platform linux/arm64,linux/amd64 \
 echo ""
 echo "=== Building frontend image ==="
 docker buildx build --platform linux/arm64,linux/amd64 \
+  --build-arg BASE_PATH=/todo/ \
   -t shiukaheng/todo-frontend:$FRONTEND_COMMIT \
   -t shiukaheng/todo-frontend:latest \
   --push \
