@@ -21,11 +21,25 @@ lets start by defining the core data that our system stores. this "core data" la
         - completed: integer | null -> completion time in unix time, or null if not completed
     - logic gates: and | or | not | xor
 
-- plan (claude please fill in how we have this right now, what data do we have on it? the main point is that a plan is essentially a list of nodes. thats all! its meant to denote a sequence of nodes we intend to fulfill. the key is it documents INTENT! the plan does not have to be valid. for now, these plans are created manually, but later on they may be created automatically.)
+- plan -> an ordered list of nodes, documenting INTENT (a sequence of nodes we intend to fulfill). the plan does not have to be valid — it is purely organizational and does not participate in boolean logic. for now, plans are created manually, but later on they may be created automatically.
+    - id: str -> unique string to identify the plan
+    - text: str | null -> optional description (e.g., "Q1 Release Plan")
+    - steps: an ordered list of references to nodes
+        - each step has a float order (allows insertion between steps, e.g., 2.5 between 2.0 and 3.0)
+        - steps can reference any node type (task, gate, etc.)
+        - no duplicate nodes within a single plan
 
-these nodes can then have a directional edge to another node, denoting a dependency, i.e., A -(depends on)-> B
+these nodes can then have a directional edge to another node, denoting a dependency, i.e., A -(depends on)-> B. each edge has its own unique id.
 
-in order to make this graph valid for subsequent calculations, a graph is ONLY valid if it is a directed acyclic graph (DAG).
+## graph constraints
+
+- the graph MUST be a directed acyclic graph (DAG). cycles are rejected on edge creation.
+- node ids are globally unique (across all node types)
+- plan ids are globally unique (separate namespace from nodes)
+- edge ids are globally unique
+- no self-loops (a node cannot depend on itself)
+- no duplicate edges (at most one DEPENDS_ON between any two nodes)
+- **transitive reduction**: when a new edge is added, any direct edges that are implied by longer paths are automatically removed. e.g., if A→B→C exists and you add A→C, the direct A→C is redundant and gets pruned (or vice versa). this keeps the graph minimal without losing reachability.
 
 and that is it! this is our minimal representation of a task graph.
 
@@ -43,9 +57,20 @@ given the above representation of tasks, there is some simple logic rules that w
 - every node, regardless of type, can infer a "calculated_due" property
     - a node's due date can ONLY be earlier than your parents (because causality); in other words, a node's "calculated_due" is the minimum of its own due, and the minimum of all its parents due
 
+additionally, for task nodes specifically:
+- deps_clear: bool -> whether this node's dependencies are satisfied according to its gate logic (i.e., can you start working on it?)
+- is_actionable: bool -> deps_clear AND NOT completed (a task that is ready to be worked on right now)
+    - always false for gate nodes (they are computed automatically)
+
 after these operations, each node will have an extra:
     - calculated_completed: int (TODO: we need to think of a way to propagate the time completed though)
     - calculated_due: int
+    - deps_clear: bool
+    - is_actionable: bool (tasks only)
+
+## write-side propagation
+
+- **uncompletion propagation**: when a task is marked incomplete, all ancestor tasks (things that depend on it, transitively) that were marked complete get recursively uncompleted. this maintains consistency — a parent task cannot claim to be done if one of its dependencies is no longer done.
 
 # metadata layer
 
@@ -80,15 +105,39 @@ NOTE: this layer is COMPLETELY seperate from the todo system, its effectively a 
 # api
 
 read (subscription) operations:
-subscribe -> subscribes to any graph changes. essentially: core + inferred + metadata
-subscribe_display -> subscribes to any changes in display layer (views for now essentially)
+- subscribe -> subscribes to any graph changes via SSE. pushes full state (core + inferred + metadata + plans) on every mutation.
+- subscribe_display -> subscribes to any changes in display layer (views for now essentially) [NOT YET IMPLEMENTED]
 
 read (request) operations:
-(fill this in claude!)
+- get state -> returns the full application state (all nodes with computed properties, all dependencies, all plans)
+- get node -> returns a single node with computed properties
+- list nodes -> returns all nodes with computed properties
+- list plans -> returns all plans with steps
+- get plan -> returns a single plan with steps
 
 write operations:
-mutate -> ... (claude please fill in!)
-mutate_display -> ... (fill in)
+- mutate -> a single batch endpoint that accepts an array of typed operations, executed atomically in one transaction. on success, a single SSE broadcast is sent. on failure, the entire transaction rolls back and no broadcast is sent.
+    - node operations:
+        - create_node(id, text?, completed?, node_type?, due?, depends?, blocks?) -> create a new node. depends/blocks accept lists of node ids to create edges inline.
+        - update_node(id, text?, completed?, node_type?, due?) -> update an existing node. only provided fields are changed. setting due to null clears it. changing node_type handles label transitions (e.g., Task→And removes completed property, And→Task adds it).
+        - delete_node(id) -> delete a node and all its edges.
+        - rename_node(id, new_id) -> change a node's id. fails if new_id already exists.
+    - edge operations:
+        - link(from_id, to_id) -> create dependency: from_id depends on to_id. validates DAG constraint, runs transitive reduction.
+        - unlink(from_id, to_id) -> remove dependency. fails if edge doesn't exist.
+    - plan operations:
+        - create_plan(id, text?, steps?) -> create a new plan with optional steps.
+        - update_plan(id, text?, steps?) -> update a plan. if steps is provided, it replaces all existing steps entirely (not a partial update).
+        - delete_plan(id) -> delete a plan and its steps. does NOT delete the referenced nodes.
+        - rename_plan(id, new_id) -> change a plan's id. fails if new_id already exists.
+- mutate_display -> same atomic batch pattern as mutate, but for display data. [NOT YET IMPLEMENTED]
+    - view operations:
+        - create_view(id) -> create a new empty view.
+        - delete_view(id) -> delete a view.
+        - update_positions(view_id, positions) -> merge positions into the view. positions is a partial dict of node_id -> (x, y); existing positions not in the update are left untouched.
+        - remove_positions(view_id, node_ids) -> remove specific node positions from the view.
+        - set_whitelist(view_id, node_ids) -> replace the entire whitelist.
+        - set_blacklist(view_id, node_ids) -> replace the entire blacklist.
 
 (im keeping the core / display data seperate as they may have very different access patterns / could be potentially stored on different DBs in the future)
 
