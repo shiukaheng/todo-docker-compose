@@ -7,7 +7,7 @@ set -e
 echo "=== Building and Deploying Todo App (GitOps) ==="
 
 # Configuration
-GITOPS_REPO="../../k3s-ldn-gitops"
+GITOPS_REPO="../k3s-ldn-gitops"
 DEPLOYMENT_FILE="apps/todo/deployment.yaml"
 
 # Get commit hashes
