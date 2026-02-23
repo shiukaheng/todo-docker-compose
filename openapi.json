@@ -1,0 +1,1595 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "DAG Todo API",
+    "description": "Task management with DAG dependencies and real-time updates",
+    "version": "0.1.0"
+  },
+  "paths": {
+    "/api/state": {
+      "get": {
+        "summary": "Get State",
+        "description": "Get current complete application state (one-shot).",
+        "operationId": "get_state_api_state_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AppState"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/state/subscribe": {
+      "get": {
+        "summary": "Subscribe State",
+        "description": "Subscribe to real-time state updates via SSE.",
+        "operationId": "subscribe_state_api_state_subscribe_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/tasks/subscribe": {
+      "get": {
+        "summary": "Subscribe Tasks",
+        "description": "Subscribe to real-time task updates via SSE (deprecated - use /state/subscribe).",
+        "operationId": "subscribe_tasks_api_tasks_subscribe_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/tasks": {
+      "get": {
+        "summary": "List Tasks",
+        "description": "List all tasks with computed properties.",
+        "operationId": "list_tasks_api_tasks_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NodeListOut"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/tasks/{task_id}": {
+      "get": {
+        "summary": "Get Task",
+        "description": "Get a single task with computed properties.",
+        "operationId": "get_task_api_tasks__task_id__get",
+        "parameters": [
+          {
+            "name": "task_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Task Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NodeOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/plans": {
+      "get": {
+        "summary": "List Plans",
+        "description": "List all plans with their steps.",
+        "operationId": "list_plans_api_plans_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlanListOut"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/plans/{plan_id}": {
+      "get": {
+        "summary": "Get Plan",
+        "description": "Get a single plan with its steps.",
+        "operationId": "get_plan_api_plans__plan_id__get",
+        "parameters": [
+          {
+            "name": "plan_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Plan Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlanOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/init": {
+      "post": {
+        "summary": "Init Db",
+        "description": "Initialize the database schema and run migrations.",
+        "operationId": "init_db_api_init_post",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OperationResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/batch": {
+      "post": {
+        "summary": "Batch Operations",
+        "description": "Execute multiple operations atomically in a single transaction.",
+        "operationId": "batch",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BatchRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/views": {
+      "get": {
+        "summary": "List Views",
+        "description": "List all views.",
+        "operationId": "list_views_api_views_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ViewListOut"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/views/{view_id}": {
+      "get": {
+        "summary": "Get View",
+        "description": "Get a single view.",
+        "operationId": "get_view_api_views__view_id__get",
+        "parameters": [
+          {
+            "name": "view_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "View Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ViewOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/views/{view_id}/positions": {
+      "get": {
+        "summary": "Get View Positions",
+        "description": "Get positions for a view.",
+        "operationId": "get_view_positions_api_views__view_id__positions_get",
+        "parameters": [
+          {
+            "name": "view_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "View Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ViewPositionsOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Put View Positions",
+        "description": "Full overwrite of positions for a view. Does NOT trigger display SSE broadcast.",
+        "operationId": "put_view_positions_api_views__view_id__positions_put",
+        "parameters": [
+          {
+            "name": "view_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "View Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ViewPositionsIn"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/display/subscribe": {
+      "get": {
+        "summary": "Subscribe Display",
+        "description": "Subscribe to real-time display layer updates via SSE.",
+        "operationId": "subscribe_display_api_display_subscribe_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/display/batch": {
+      "post": {
+        "summary": "Display Batch Operations",
+        "description": "Execute multiple display operations atomically in a single transaction.",
+        "operationId": "displayBatch",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DisplayBatchRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/health": {
+      "get": {
+        "summary": "Health",
+        "description": "Health check endpoint.",
+        "operationId": "health_health_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AppState": {
+        "properties": {
+          "tasks": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/NodeOut"
+            },
+            "type": "object",
+            "title": "Tasks"
+          },
+          "dependencies": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/DependencyOut"
+            },
+            "type": "object",
+            "title": "Dependencies"
+          },
+          "has_cycles": {
+            "type": "boolean",
+            "title": "Has Cycles"
+          },
+          "plans": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/PlanOut"
+            },
+            "type": "object",
+            "title": "Plans"
+          }
+        },
+        "type": "object",
+        "required": [
+          "tasks",
+          "dependencies",
+          "has_cycles",
+          "plans"
+        ],
+        "title": "AppState",
+        "description": "Complete application state (graph + plans)."
+      },
+      "BatchOperationResult": {
+        "properties": {
+          "op": {
+            "type": "string",
+            "title": "Op"
+          },
+          "success": {
+            "type": "boolean",
+            "title": "Success"
+          },
+          "message": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Message"
+          }
+        },
+        "type": "object",
+        "required": [
+          "op",
+          "success"
+        ],
+        "title": "BatchOperationResult",
+        "description": "Result of a single operation in a batch."
+      },
+      "BatchRequest": {
+        "properties": {
+          "operations": {
+            "items": {
+              "oneOf": [
+                {
+                  "$ref": "#/components/schemas/CreateNodeOp"
+                },
+                {
+                  "$ref": "#/components/schemas/UpdateNodeOp"
+                },
+                {
+                  "$ref": "#/components/schemas/DeleteNodeOp"
+                },
+                {
+                  "$ref": "#/components/schemas/RenameNodeOp"
+                },
+                {
+                  "$ref": "#/components/schemas/LinkOp"
+                },
+                {
+                  "$ref": "#/components/schemas/UnlinkOp"
+                },
+                {
+                  "$ref": "#/components/schemas/CreatePlanOp"
+                },
+                {
+                  "$ref": "#/components/schemas/UpdatePlanOp"
+                },
+                {
+                  "$ref": "#/components/schemas/DeletePlanOp"
+                },
+                {
+                  "$ref": "#/components/schemas/RenamePlanOp"
+                }
+              ],
+              "discriminator": {
+                "propertyName": "op",
+                "mapping": {
+                  "create_node": "#/components/schemas/CreateNodeOp",
+                  "create_plan": "#/components/schemas/CreatePlanOp",
+                  "delete_node": "#/components/schemas/DeleteNodeOp",
+                  "delete_plan": "#/components/schemas/DeletePlanOp",
+                  "link": "#/components/schemas/LinkOp",
+                  "rename_node": "#/components/schemas/RenameNodeOp",
+                  "rename_plan": "#/components/schemas/RenamePlanOp",
+                  "unlink": "#/components/schemas/UnlinkOp",
+                  "update_node": "#/components/schemas/UpdateNodeOp",
+                  "update_plan": "#/components/schemas/UpdatePlanOp"
+                }
+              }
+            },
+            "type": "array",
+            "title": "Operations"
+          }
+        },
+        "type": "object",
+        "required": [
+          "operations"
+        ],
+        "title": "BatchRequest",
+        "description": "Batch of operations to execute atomically."
+      },
+      "BatchResponse": {
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "title": "Success"
+          },
+          "results": {
+            "items": {
+              "$ref": "#/components/schemas/BatchOperationResult"
+            },
+            "type": "array",
+            "title": "Results"
+          },
+          "message": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Message"
+          }
+        },
+        "type": "object",
+        "required": [
+          "success",
+          "results"
+        ],
+        "title": "BatchResponse",
+        "description": "Response for a batch operation."
+      },
+      "CreateNodeOp": {
+        "properties": {
+          "op": {
+            "type": "string",
+            "const": "create_node",
+            "title": "Op"
+          },
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "text": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Text"
+          },
+          "completed": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Completed"
+          },
+          "node_type": {
+            "$ref": "#/components/schemas/NodeType",
+            "default": "Task"
+          },
+          "due": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Due"
+          },
+          "depends": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Depends"
+          },
+          "blocks": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Blocks"
+          }
+        },
+        "type": "object",
+        "required": [
+          "op",
+          "id"
+        ],
+        "title": "CreateNodeOp",
+        "description": "Create a node."
+      },
+      "CreatePlanOp": {
+        "properties": {
+          "op": {
+            "type": "string",
+            "const": "create_plan",
+            "title": "Op"
+          },
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "text": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Text"
+          },
+          "steps": {
+            "items": {
+              "$ref": "#/components/schemas/StepData"
+            },
+            "type": "array",
+            "title": "Steps",
+            "default": []
+          }
+        },
+        "type": "object",
+        "required": [
+          "op",
+          "id"
+        ],
+        "title": "CreatePlanOp",
+        "description": "Create a plan."
+      },
+      "DeleteNodeOp": {
+        "properties": {
+          "op": {
+            "type": "string",
+            "const": "delete_node",
+            "title": "Op"
+          },
+          "id": {
+            "type": "string",
+            "title": "Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "op",
+          "id"
+        ],
+        "title": "DeleteNodeOp",
+        "description": "Delete a node."
+      },
+      "DeletePlanOp": {
+        "properties": {
+          "op": {
+            "type": "string",
+            "const": "delete_plan",
+            "title": "Op"
+          },
+          "id": {
+            "type": "string",
+            "title": "Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "op",
+          "id"
+        ],
+        "title": "DeletePlanOp",
+        "description": "Delete a plan."
+      },
+      "DeleteViewOp": {
+        "properties": {
+          "op": {
+            "type": "string",
+            "const": "delete_view",
+            "title": "Op"
+          },
+          "id": {
+            "type": "string",
+            "title": "Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "op",
+          "id"
+        ],
+        "title": "DeleteViewOp",
+        "description": "Delete a view."
+      },
+      "DependencyOut": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "from_id": {
+            "type": "string",
+            "title": "From Id"
+          },
+          "to_id": {
+            "type": "string",
+            "title": "To Id"
+          },
+          "created_at": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Created At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "from_id",
+          "to_id"
+        ],
+        "title": "DependencyOut",
+        "description": "Dependency relationship."
+      },
+      "DisplayBatchRequest": {
+        "properties": {
+          "operations": {
+            "items": {
+              "oneOf": [
+                {
+                  "$ref": "#/components/schemas/UpdateViewOp"
+                },
+                {
+                  "$ref": "#/components/schemas/DeleteViewOp"
+                }
+              ],
+              "discriminator": {
+                "propertyName": "op",
+                "mapping": {
+                  "delete_view": "#/components/schemas/DeleteViewOp",
+                  "update_view": "#/components/schemas/UpdateViewOp"
+                }
+              }
+            },
+            "type": "array",
+            "title": "Operations"
+          }
+        },
+        "type": "object",
+        "required": [
+          "operations"
+        ],
+        "title": "DisplayBatchRequest",
+        "description": "Batch of display operations to execute atomically."
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "LinkOp": {
+        "properties": {
+          "op": {
+            "type": "string",
+            "const": "link",
+            "title": "Op"
+          },
+          "from_id": {
+            "type": "string",
+            "title": "From Id"
+          },
+          "to_id": {
+            "type": "string",
+            "title": "To Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "op",
+          "from_id",
+          "to_id"
+        ],
+        "title": "LinkOp",
+        "description": "Create a dependency link."
+      },
+      "NodeListOut": {
+        "properties": {
+          "tasks": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/NodeOut"
+            },
+            "type": "object",
+            "title": "Tasks"
+          },
+          "dependencies": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/DependencyOut"
+            },
+            "type": "object",
+            "title": "Dependencies"
+          },
+          "has_cycles": {
+            "type": "boolean",
+            "title": "Has Cycles"
+          }
+        },
+        "type": "object",
+        "required": [
+          "tasks",
+          "dependencies",
+          "has_cycles"
+        ],
+        "title": "NodeListOut",
+        "description": "Node list response."
+      },
+      "NodeOut": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "text": {
+            "type": "string",
+            "title": "Text"
+          },
+          "node_type": {
+            "$ref": "#/components/schemas/NodeType"
+          },
+          "completed": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Completed"
+          },
+          "due": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Due"
+          },
+          "created_at": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Created At"
+          },
+          "updated_at": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Updated At"
+          },
+          "calculated_value": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Calculated Value"
+          },
+          "calculated_due": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Calculated Due"
+          },
+          "deps_clear": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Deps Clear"
+          },
+          "is_actionable": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Is Actionable"
+          },
+          "parents": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Parents"
+          },
+          "children": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Children"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "text",
+          "node_type",
+          "completed",
+          "due",
+          "created_at",
+          "updated_at",
+          "calculated_value",
+          "calculated_due",
+          "deps_clear",
+          "is_actionable",
+          "parents",
+          "children"
+        ],
+        "title": "NodeOut",
+        "description": "Node response with calculated fields."
+      },
+      "NodeType": {
+        "type": "string",
+        "enum": [
+          "Task",
+          "And",
+          "Or",
+          "Not",
+          "ExactlyOne"
+        ],
+        "title": "NodeType",
+        "description": "Node type labels."
+      },
+      "OperationResult": {
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "title": "Success"
+          },
+          "message": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Message"
+          }
+        },
+        "type": "object",
+        "required": [
+          "success"
+        ],
+        "title": "OperationResult",
+        "description": "Generic operation result."
+      },
+      "PlanListOut": {
+        "properties": {
+          "plans": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/PlanOut"
+            },
+            "type": "object",
+            "title": "Plans"
+          }
+        },
+        "type": "object",
+        "required": [
+          "plans"
+        ],
+        "title": "PlanListOut",
+        "description": "All plans."
+      },
+      "PlanOut": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "text": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Text"
+          },
+          "created_at": {
+            "type": "integer",
+            "title": "Created At"
+          },
+          "updated_at": {
+            "type": "integer",
+            "title": "Updated At"
+          },
+          "steps": {
+            "items": {
+              "$ref": "#/components/schemas/StepData"
+            },
+            "type": "array",
+            "title": "Steps"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "text",
+          "created_at",
+          "updated_at",
+          "steps"
+        ],
+        "title": "PlanOut",
+        "description": "Plan response."
+      },
+      "RenameNodeOp": {
+        "properties": {
+          "op": {
+            "type": "string",
+            "const": "rename_node",
+            "title": "Op"
+          },
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "new_id": {
+            "type": "string",
+            "title": "New Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "op",
+          "id",
+          "new_id"
+        ],
+        "title": "RenameNodeOp",
+        "description": "Rename a node."
+      },
+      "RenamePlanOp": {
+        "properties": {
+          "op": {
+            "type": "string",
+            "const": "rename_plan",
+            "title": "Op"
+          },
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "new_id": {
+            "type": "string",
+            "title": "New Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "op",
+          "id",
+          "new_id"
+        ],
+        "title": "RenamePlanOp",
+        "description": "Rename a plan."
+      },
+      "StepData": {
+        "properties": {
+          "node_id": {
+            "type": "string",
+            "title": "Node Id"
+          },
+          "order": {
+            "type": "number",
+            "title": "Order"
+          }
+        },
+        "type": "object",
+        "required": [
+          "node_id",
+          "order"
+        ],
+        "title": "StepData",
+        "description": "Step in a plan."
+      },
+      "UnlinkOp": {
+        "properties": {
+          "op": {
+            "type": "string",
+            "const": "unlink",
+            "title": "Op"
+          },
+          "from_id": {
+            "type": "string",
+            "title": "From Id"
+          },
+          "to_id": {
+            "type": "string",
+            "title": "To Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "op",
+          "from_id",
+          "to_id"
+        ],
+        "title": "UnlinkOp",
+        "description": "Remove a dependency link."
+      },
+      "UpdateNodeOp": {
+        "properties": {
+          "op": {
+            "type": "string",
+            "const": "update_node",
+            "title": "Op"
+          },
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "text": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Text"
+          },
+          "completed": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Completed"
+          },
+          "node_type": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/NodeType"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "due": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Due"
+          }
+        },
+        "type": "object",
+        "required": [
+          "op",
+          "id"
+        ],
+        "title": "UpdateNodeOp",
+        "description": "Update a node."
+      },
+      "UpdatePlanOp": {
+        "properties": {
+          "op": {
+            "type": "string",
+            "const": "update_plan",
+            "title": "Op"
+          },
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "text": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Text"
+          },
+          "steps": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/StepData"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Steps"
+          }
+        },
+        "type": "object",
+        "required": [
+          "op",
+          "id"
+        ],
+        "title": "UpdatePlanOp",
+        "description": "Update a plan."
+      },
+      "UpdateViewOp": {
+        "properties": {
+          "op": {
+            "type": "string",
+            "const": "update_view",
+            "title": "Op"
+          },
+          "view_id": {
+            "type": "string",
+            "title": "View Id"
+          },
+          "whitelist": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Whitelist"
+          },
+          "blacklist": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Blacklist"
+          }
+        },
+        "type": "object",
+        "required": [
+          "op",
+          "view_id"
+        ],
+        "title": "UpdateViewOp",
+        "description": "Upsert a view. Creates if not exists, replaces provided fields."
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "ctx": {
+            "type": "object",
+            "title": "Context"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      },
+      "ViewListOut": {
+        "properties": {
+          "views": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/ViewOut"
+            },
+            "type": "object",
+            "title": "Views"
+          }
+        },
+        "type": "object",
+        "required": [
+          "views"
+        ],
+        "title": "ViewListOut",
+        "description": "All views."
+      },
+      "ViewOut": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "positions": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Positions"
+          },
+          "whitelist": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Whitelist"
+          },
+          "blacklist": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Blacklist"
+          },
+          "created_at": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Created At"
+          },
+          "updated_at": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Updated At"
+          },
+          "include_recursive": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Include Recursive"
+          },
+          "exclude_recursive": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Exclude Recursive"
+          },
+          "hide_completed_for": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Hide Completed For"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "positions",
+          "whitelist",
+          "blacklist",
+          "created_at",
+          "updated_at",
+          "include_recursive",
+          "exclude_recursive"
+        ],
+        "title": "ViewOut",
+        "description": "View response."
+      },
+      "ViewPositionsIn": {
+        "properties": {
+          "positions": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Positions"
+          }
+        },
+        "type": "object",
+        "required": [
+          "positions"
+        ],
+        "title": "ViewPositionsIn",
+        "description": "View positions update request."
+      },
+      "ViewPositionsOut": {
+        "properties": {
+          "positions": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Positions"
+          }
+        },
+        "type": "object",
+        "required": [
+          "positions"
+        ],
+        "title": "ViewPositionsOut",
+        "description": "View positions response."
+      }
+    }
+  }
+}
